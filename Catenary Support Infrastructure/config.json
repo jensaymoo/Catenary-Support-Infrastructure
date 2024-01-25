@@ -1,0 +1,4 @@
+{
+    "DatabaseProvider": "SQLite",
+    "ConnectionString": "Data Source=database.db"
+}
