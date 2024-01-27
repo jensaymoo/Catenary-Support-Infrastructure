@@ -1,9 +1,14 @@
-﻿using FluentValidation;
+﻿using CatenarySupport.Database.Tables;
+using FluentValidation;
+using LinqToDB;
 using Newtonsoft.Json;
 using System.Diagnostics;
 
 namespace CatenarySupport
 {
+    internal enum DatabaseProviders
+    { SQLite }
+
     internal class Configuration
     {
         public string? DatabaseProvider { get; set; }
@@ -16,11 +21,35 @@ namespace CatenarySupport
         {
             RuleFor(opt => opt.DatabaseProvider)
                 .NotNull()
-                .NotEmpty();
+                .NotEmpty()
+                .IsEnumName(typeof(DatabaseProviders));
 
             RuleFor(opt => opt.ConnectionString)
                 .NotNull()
                 .NotEmpty();
+
+            RuleFor(opt => opt)
+                .Custom((config, context) =>
+                {
+                    try
+                    {
+                        using (var db = new DataContext(config.DatabaseProvider!, config.ConnectionString!))
+                        {
+                            db.RunInTransaction(() =>
+                            {
+                                var temp_uuid = Guid.NewGuid().ToString("N");
+
+                                db.CreateTable<PillarData>(temp_uuid);
+                                db.DropTable<PillarData>(temp_uuid);
+                            });
+
+                        }
+                    }
+                    catch 
+                    {
+                        context.AddFailure("DatabaseProvider, ConnectionString", "Не удалось проверить подключение к базе данных. Проверьте параметры 'DatabaseProvider' и 'ConnectionString'.");
+                    }
+                });
         }
     }
     internal class ConfigurationManager

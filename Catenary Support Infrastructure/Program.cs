@@ -9,7 +9,19 @@ namespace CatenarySupport
         [STAThread]
         static void Main()
         {
-            var config = ConfigurationManager.GetConfiguration();
+            ApplicationConfiguration.Initialize();
+
+            Configuration config = null;
+            try
+            {
+                config = ConfigurationManager.GetConfiguration();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Îøèáêà", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             var builder = new ContainerBuilder();
             
             builder.Register(x => new DataContext(config.DatabaseProvider!, config.ConnectionString!))
@@ -26,7 +38,6 @@ namespace CatenarySupport
             var scope = builder.Build().BeginLifetimeScope();
             
 
-            ApplicationConfiguration.Initialize();
             Application.Run(scope.Resolve<MainForm>());
         }
     }
