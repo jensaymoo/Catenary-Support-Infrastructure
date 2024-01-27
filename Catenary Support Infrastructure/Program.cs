@@ -16,7 +16,7 @@ namespace CatenarySupport
             {
                 config = ConfigurationManager.GetConfiguration();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

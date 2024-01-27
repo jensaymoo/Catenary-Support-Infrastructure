@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace CatenarySupport
 {
-    internal enum DatabaseProviders
+    internal enum SupportedDatabaseProviders
     { SQLite }
 
     internal class Configuration
@@ -22,7 +22,7 @@ namespace CatenarySupport
             RuleFor(opt => opt.DatabaseProvider)
                 .NotNull()
                 .NotEmpty()
-                .IsEnumName(typeof(DatabaseProviders));
+                .IsEnumName(typeof(SupportedDatabaseProviders));
 
             RuleFor(opt => opt.ConnectionString)
                 .NotNull()
@@ -63,17 +63,38 @@ namespace CatenarySupport
         {
             if (instance == null)
             {
-                var config_path = Path.Combine(Directory.GetCurrentDirectory(), "config.json");
-                var config_string = File.ReadAllText(config_path);
-
                 lock (sync)
                 {
                     if (instance == null)
                     {
-                        instance = JsonConvert.DeserializeObject<Configuration>(config_string)!;
+                        try
+                        {
+                            var config_path = Path.Combine(Directory.GetCurrentDirectory(), "config.json");
+                            var config_string = File.ReadAllText(config_path);
 
-                        var validator = new ConfigurationValidator();
-                        validator.ValidateAndThrow(instance);
+                            instance = JsonConvert.DeserializeObject<Configuration>(config_string)!;
+
+                            try
+                            {
+                                var validator = new ConfigurationValidator();
+                                validator.ValidateAndThrow(instance);
+                            } 
+                            catch (ValidationException ex)
+                            {
+
+                                var errors = ex.Errors.Select((t) => "-- " + t.ErrorMessage)
+                                    .Aggregate((prev, current) => prev + "\n\n" + current);
+
+                                throw new Exception(errors);
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception($"Неудалось выполнить загрузку параметров из файла 'config.json':\n\n{ex.Message}");
+                        }
+
+
                     }
                 }
 
