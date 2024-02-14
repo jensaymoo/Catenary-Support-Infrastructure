@@ -58,7 +58,7 @@ namespace CatenarySupport
             gridview_masts.RowUpdated += (sender, e) =>
             {
                 var updated_mast = (e.Row as MastData);
-
+                
                 if (e.RowHandle == DataControlBase.NewItemRowHandle)
                 {
                     MastProvider.Insert(updated_mast!);

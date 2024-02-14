@@ -1,8 +1,5 @@
 ﻿using CatenarySupport.Database;
 using CatenarySupport.Database.Tables;
-using DevExpress.Data.Browsing;
-using DevExpress.XtraReports.Native.Data;
-using LinqToDB;
 using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers
@@ -17,6 +14,7 @@ namespace CatenarySupport.Providers
 
         public void Insert(MastData model)
         {
+            model.UUID = Guid.NewGuid().ToString();
             datacontext.Insert(model);
         }
 
