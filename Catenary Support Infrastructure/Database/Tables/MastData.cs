@@ -7,8 +7,8 @@ namespace CatenarySupport.Database.Tables
     [Table("masts")]
     public class MastData
     {
-        [Column("mast_uuid"), PrimaryKey, Identity, NotNull, DataType("INTEGER")]
-        public int UUID { get; set; }
+        [Column("mast_uuid"), DisplayName("mast_uuid"), PrimaryKey, Identity, NotNull, DataType("TEXT")]
+        public string UUID { get; set; }
 
         [Column("plant"), DisplayName("Цех"), DataType("TEXT"), BindedGridColumn(typeof(PlantData))]
         public string? Plant { get; set; }
