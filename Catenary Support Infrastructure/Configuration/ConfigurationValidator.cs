@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using CatenarySupport.Database;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace CatenarySupport
                     try
                     {
                         var providerType = Assembly.GetExecutingAssembly().GetTypes()
-                            .Where(t => t.Name == config).Single();
+                            .Where(t => t.Name == config && t.IsClass && t.GetInterface(nameof(IDatabase)) != null).Single();
                     }
                     catch
                     {
