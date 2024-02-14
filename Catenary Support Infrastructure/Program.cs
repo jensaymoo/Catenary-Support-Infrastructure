@@ -1,4 +1,7 @@
 using Autofac;
+using CatenarySupport.Database;
+using CatenarySupport.Database.Tables;
+using DevExpress.XtraPrinting.BarCode;
 using LinqToDB;
 using System.Reflection;
 
@@ -11,10 +14,27 @@ namespace CatenarySupport
         {
             ApplicationConfiguration.Initialize();
 
-            Configuration config = null;
+            var builder = new ContainerBuilder();
+            ILifetimeScope scope;
+
             try
             {
-                config = ConfigurationManager.GetConfiguration();
+                builder.RegisterType<ConfigurationProviderJson>()
+                    .As<IConfigurationProvider>()
+                    .InstancePerLifetimeScope();
+
+                builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+                    .Where(t => t.Name == new ConfigurationProviderJson().Configuration.DatabaseProvider!)
+                    .AsImplementedInterfaces()
+                    .InstancePerLifetimeScope();
+
+                builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+                    .Where(t => t.Name.EndsWith("Provider"))
+                    .AsImplementedInterfaces()
+                    .InstancePerLifetimeScope();
+
+                builder.RegisterType<Main>();
+                scope = builder.Build().BeginLifetimeScope();
             }
             catch (Exception ex)
             {
@@ -22,23 +42,7 @@ namespace CatenarySupport
                 return;
             }
 
-            var builder = new ContainerBuilder();
-            
-            builder.Register(x => new DataContext(config.DatabaseProvider!, config.ConnectionString!))
-                .As<IDataContext>()
-                .InstancePerLifetimeScope();
-
-            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
-                .Where(t => t.Name.EndsWith("Provider"))
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
-
-            builder.RegisterType<MainForm>();
-
-            var scope = builder.Build().BeginLifetimeScope();
-            
-
-            Application.Run(scope.Resolve<MainForm>());
+            Application.Run(scope.Resolve<Main>());
         }
     }
 }

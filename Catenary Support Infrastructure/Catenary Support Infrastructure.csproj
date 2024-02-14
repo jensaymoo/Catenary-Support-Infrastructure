@@ -5,8 +5,9 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <RootNamespace>CatenarySupport</RootNamespace>
     <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
+    <UseWindowsForms>True</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>False</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +33,10 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="8.0.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="DevExpress.Win.Design" Version="23.2.3" />
+    <PackageReference Include="devexpress.wpf.controls" Version="23.2.3" />
+    <PackageReference Include="DevExpress.Wpf.Core" Version="23.2.3" />
+    <PackageReference Include="devexpress.wpf.grid.core" Version="23.2.3" />
     <PackageReference Include="FluentValidation" Version="11.9.0" />
     <PackageReference Include="linq2db" Version="5.3.2" />
     <PackageReference Include="linq2db.SQLite" Version="5.3.2" />
@@ -42,6 +47,9 @@
   <ItemGroup>
     <None Update="config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="database.db">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
