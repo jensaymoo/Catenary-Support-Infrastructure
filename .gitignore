@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /Catenary Support Infrastructure/config.json
 *.config
+/Catenary Support Infrastructure/database.db
