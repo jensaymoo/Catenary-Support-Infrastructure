@@ -1,6 +1,8 @@
 ﻿using CatenarySupport.Attributes;
 using CatenarySupport.Database.Tables;
 using CatenarySupport.Providers;
+using DevExpress.Data;
+using DevExpress.Internal;
 using DevExpress.Xpf.Grid;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
@@ -9,6 +11,7 @@ using LinqToDB.Extensions;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace CatenarySupport
 {
@@ -16,12 +19,12 @@ namespace CatenarySupport
     {
         private readonly Dictionary<Type, object> Providers;
 
-        private readonly IProvider<MastData> MastProvider;
-        private readonly IProvider<MastTypeData> MastTypeProvider;
-        private readonly IProvider<PlantData> PlantProvider;
-        private readonly IProvider<DistrictData> DistrictProvider;
+        private readonly IProvider<MastObject> MastProvider;
+        private readonly IProvider<MastTypeObject> MastTypeProvider;
+        private readonly IProvider<PlantObject> PlantProvider;
+        private readonly IProvider<DistrictObject> DistrictProvider;
 
-        public Main(IProvider<MastData> mast_provider, IProvider<MastTypeData> mast_type_provider, IProvider<PlantData> plant_data_provider, IProvider<DistrictData> district_provider)
+        public Main(IProvider<MastObject> mast_provider, IProvider<MastTypeObject> mast_type_provider, IProvider<PlantObject> plant_data_provider, IProvider<DistrictObject> district_provider)
 
         {
 
@@ -45,7 +48,7 @@ namespace CatenarySupport
 
         private void Main_Shown(object sender, EventArgs e)
         {
-            SetColumnParams(typeof(MastData), gridControl.RepositoryItems);
+            SetColumnParams(typeof(MastObject), gridControl.RepositoryItems);
 
             gridview_masts.OptionsBehavior.EditingMode = GridEditingMode.EditFormInplace;
             gridview_masts.CustomRowCellEditForEditing += (sender, e) =>
@@ -55,10 +58,11 @@ namespace CatenarySupport
                     e.RepositoryItem = item;
             };
 
-            gridview_masts.RowUpdated += (sender, e) =>
+
+                gridview_masts.RowUpdated += (sender, e) =>
             {
-                var updated_mast = (e.Row as MastData);
-                
+                var updated_mast = (e.Row as MastObject);
+
                 if (e.RowHandle == DataControlBase.NewItemRowHandle)
                 {
                     MastProvider.Insert(updated_mast!);
@@ -85,24 +89,29 @@ namespace CatenarySupport
                     return;
                 }
 
-                var deleted_mast = (e.Row as MastData);
+                var deleted_mast = (e.Row as MastObject);
                 MastProvider.Delete(deleted_mast!);
 #if DEBUG
                 Debug.WriteLine("DELETE MAST UUID: " + deleted_mast!.UUID);
 #endif
             };
 
-            BindingList<MastData> masts = new BindingList<MastData>();
+            BindingSource bindingSource = new BindingSource();
+            bindingSource.AddCollection(MastProvider.Select());
 
-            MastProvider.Select().ForEach(masts.Add);
-            gridControl.DataSource = masts;
+            gridControl.DataSource = bindingSource;
 
             //скрываем коллнки не имеющие атрибут DisplayName
-            typeof(MastData).GetProperties()
+            typeof(MastObject).GetProperties()
                 .Where((p) => p.GetAttribute<DisplayNameAttribute>() == null)
                 .ForEach(f => gridview_masts.Columns[f.Name].Visible = false);
 
 
+        }
+
+        private void Gridview_masts_ShowingEditor(object? sender, CancelEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void SetColumnParams(Type type, RepositoryItemCollection repository)

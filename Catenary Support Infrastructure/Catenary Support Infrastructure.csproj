@@ -33,6 +33,8 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="8.0.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.ExpressionMapping" Version="7.0.0" />
     <PackageReference Include="DevExpress.Win.Design" Version="23.2.3" />
     <PackageReference Include="devexpress.wpf.controls" Version="23.2.3" />
     <PackageReference Include="DevExpress.Wpf.Core" Version="23.2.3" />

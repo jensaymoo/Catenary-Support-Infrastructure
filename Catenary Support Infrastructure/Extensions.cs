@@ -1,9 +1,6 @@
 ﻿using LinqToDB;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections;
+using System.Linq.Expressions;
 
 namespace CatenarySupport
 {
@@ -17,15 +14,20 @@ namespace CatenarySupport
 
             transaction.CommitTransaction();
         }
+
         public static void ForEach<T>(this IEnumerable<T> @this, Action<T> action)
         {
             foreach (T item in @this)
             {
                 action(item);
             }
-
-
         }
+
+        public static void AddCollection<T>(this BindingSource @this, IEnumerable<T> obj)
+        {
+            obj.ForEach(a => @this.Add(a));
+        }
+
         public static IEnumerable<V> SelectNotNull<T, V>(this IEnumerable<T> items, Func<T, V> func) where V : class
         {
             foreach (var item in items)

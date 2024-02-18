@@ -1,6 +1,9 @@
 using Autofac;
+using AutoMapper;
+using AutoMapper.Extensions.ExpressionMapping;
 using CatenarySupport.Database;
 using CatenarySupport.Database.Tables;
+using CatenarySupport.Providers;
 using DevExpress.XtraPrinting.BarCode;
 using LinqToDB;
 using System.Reflection;
