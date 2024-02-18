@@ -1,17 +1,16 @@
-﻿using LinqToDB.Mapping;
-using System.ComponentModel;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CatenarySupport.Providers.Objects
 {
     public class DistrictObject
     {
-        [DisplayName("Участок")]
+        [Display(AutoGenerateField = true, Name = "Участок")]
         public string? District { get; set; }
 
-        [DisplayName("Грунт"),]
+        [Display(AutoGenerateField = true, Name = "Грунт"),]
         public string? SoilCharacteristics { get; set; }
 
-        [DisplayName("Установленная скорость")]
+        [Display(AutoGenerateField = true, Name = "Установленная скорость")]
         public int? MaxSpeed { get; set; }
     }
 }

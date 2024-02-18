@@ -1,14 +1,13 @@
-﻿using LinqToDB.Mapping;
-using System.ComponentModel;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CatenarySupport.Providers.Objects
 {
     public class PlantObject
     {
-        [ DisplayName("Цех")]
+        [Display(AutoGenerateField = true, Name = "Цех")]
         public string? Plant { get; set; }
 
-        [DisplayName("Дислокация")]
+        [Display(AutoGenerateField = true, Name = "Дислокация")]
         public string? PlantDislocation { get; set; }
     }
 }

@@ -1,14 +1,13 @@
-﻿using System.ComponentModel;
-
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CatenarySupport.Providers.Objects
 {
     public class MastTypeObject
     {
-        [DisplayName("Тип стойки")]
+        [Display(AutoGenerateField = true, Name = "Тип стойки")]
         public string? MastType { get; set; }
 
-        [DisplayName("Материал")]
+        [Display(AutoGenerateField = true, Name = "Материал")]
         public string? MastMaterial { get; set; }
     }
 }

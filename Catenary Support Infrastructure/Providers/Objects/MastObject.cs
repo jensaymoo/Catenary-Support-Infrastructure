@@ -1,49 +1,49 @@
 ﻿using CatenarySupport.Attributes;
-using CatenarySupport.Database.Tables;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace CatenarySupport.Providers.Objects
 {
     public class MastObject
     {
-        [DisplayName("mast_uuid"), ReadOnly(true)]
+        [Display(AutoGenerateField = false, Name = "mast_uuid"), ReadOnly(true)]
         public string UUID { get; set; }
 
-        [DisplayName("Цех"), BindedGridColumn(typeof(PlantObject))]
+        [Display(AutoGenerateField = true, Name = "Цех"), BindedGridColumn(typeof(PlantObject))]
         public string? Plant { get; set; }
 
-        [DisplayName("Участок"), BindedGridColumn(typeof(DistrictObject))]
+        [Display(AutoGenerateField = true, Name = "Участок"), BindedGridColumn(typeof(DistrictObject))]
         public string? District { get; set; }
 
-        [DisplayName("Путь")]
+        [Display(AutoGenerateField = true, Name = "Путь")]
         public string? Track { get; set; }
 
-        [DisplayName("Опора")]
+        [Display(AutoGenerateField = true, Name = "Опора")]
         public int? MastID { get; set; }
 
-        [DisplayName("Индекс")]
+        [Display(AutoGenerateField = true, Name = "Индекс")]
         public string? MastLiter { get; set; }
 
-        [DisplayName("Тип стойки"), BindedGridColumn(typeof(MastTypeObject))]
+        [Display(AutoGenerateField = true, Name = "Тип стойки"), BindedGridColumn(typeof(MastTypeObject))]
         public string? MastType { get; set; }
 
-        [DisplayName("Кол-во стоек"), SpinColumn]
+        [Display(AutoGenerateField = true, Name = "Кол-во стоек"), SpinColumn]
         public int? MastCount { get; set; }
 
-        [DisplayName("Тип фундамента")]
+        [Display(AutoGenerateField = true, Name = "Тип фундамента")]
         public string? FoundationType { get; set; }
 
-        [DisplayName("Кол-во фундаментов"), SpinColumn]
+        [Display(AutoGenerateField = true, Name = "Кол-во фундаментов"), SpinColumn]
         public int? FoundationCount{ get; set; }
 
-        [DisplayName("Тип анкера")]
+        [Display(AutoGenerateField = true, Name = "Тип анкера")]
         public string? AnchorType { get; set; }
 
-        [DisplayName("Кол-во анкеров"), SpinColumn]
+        [Display(AutoGenerateField = true, Name = "Кол-во анкеров"), SpinColumn]
         public int? AnchorCount { get; set; }
 
-        [DisplayName("Примечания"), MultilineTextColumn]
+        [Display(AutoGenerateField = true, Name = "Примечания"), MultilineTextColumn]
         public string? Notes { get; set; }
 
     }
