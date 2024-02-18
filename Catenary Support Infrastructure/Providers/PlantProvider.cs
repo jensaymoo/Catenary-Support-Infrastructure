@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers
 {
-    internal class PlantProvider : IProvider<PlantData>
+    internal class PlantProvider : IProvider<PlantObject>
     {
         private readonly IDatabase datacontext;
         public PlantProvider(IDatabase db)
@@ -14,31 +14,31 @@ namespace CatenarySupport.Providers
             //datacontext.CreateTable<PlantData>(tableOptions: TableOptions.CreateIfNotExists);
         }
 
-        public void Insert(PlantData model)
+        public void Insert(PlantObject model)
         {
             datacontext.Insert(model);
         }
 
-        public void Delete(PlantData model)
+        public void Delete(PlantObject model)
         {
             datacontext.Delete(model);
         }
-        public void Delete(Expression<Func<PlantData, bool>> predicate)
+        public void Delete(Expression<Func<PlantObject, bool>> predicate)
         {
             datacontext.Delete(predicate);
         }
 
-        public IEnumerable<PlantData> Select()
+        public IEnumerable<PlantObject> Select()
         {
-            return datacontext.Select<PlantData>();
+            return datacontext.Select<PlantObject>();
         }
 
-        public IEnumerable<PlantData> Get(Expression<Func<PlantData, bool>> predicate)
+        public IEnumerable<PlantObject> Select(Expression<Func<PlantObject, bool>> predicate)
         {
-            return datacontext.Select<PlantData>(predicate);
+            return datacontext.Select<PlantObject>(predicate);
         }
 
-        public void Update(PlantData model)
+        public void Update(PlantObject model)
         {
             datacontext.Update(model);
         }

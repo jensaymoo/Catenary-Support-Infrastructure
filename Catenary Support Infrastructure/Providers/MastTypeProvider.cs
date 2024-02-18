@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CatenarySupport.Providers
 {
-    internal class MastTypeProvider : IProvider<MastTypeData>
+    internal class MastTypeProvider : IProvider<MastTypeObject>
     {
         private readonly IDatabase datacontext;
         public MastTypeProvider(IDatabase db)
@@ -19,31 +19,31 @@ namespace CatenarySupport.Providers
             //datacontext.CreateTable<MastTypeData>(tableOptions: TableOptions.CreateIfNotExists);
         }
 
-        public void Insert(MastTypeData model)
+        public void Insert(MastTypeObject model)
         {
             datacontext.Insert(model);
         }
 
-        public void Delete(MastTypeData model)
+        public void Delete(MastTypeObject model)
         {
             datacontext.Delete(model);
         }
-        public void Delete(Expression<Func<MastTypeData, bool>> predicate)
+        public void Delete(Expression<Func<MastTypeObject, bool>> predicate)
         {
             datacontext.Delete(predicate);
         }
 
-        public IEnumerable<MastTypeData> Select()
+        public IEnumerable<MastTypeObject> Select()
         {
-            return datacontext.Select<MastTypeData>();
+            return datacontext.Select<MastTypeObject>();
         }
 
-        public IEnumerable<MastTypeData> Get(Expression<Func<MastTypeData, bool>> predicate)
+        public IEnumerable<MastTypeObject> Select(Expression<Func<MastTypeObject, bool>> predicate)
         {
-            return datacontext.Select<MastTypeData>(predicate);
+            return datacontext.Select<MastTypeObject>(predicate);
         }
 
-        public void Update(MastTypeData model)
+        public void Update(MastTypeObject model)
         {
             datacontext.Update(model);
         }

@@ -1,10 +1,68 @@
 ﻿using LinqToDB;
 using System.Linq.Expressions;
+using AutoMapper;
+using AutoMapper.Extensions.ExpressionMapping;
+using CatenarySupport.Database.Tables;
+using CatenarySupport.Providers;
+using DevExpress.Xpf.Editors.RangeControl.Internal;
+using AutoMapper.QueryableExtensions;
+using System.Linq;
+using System.Collections;
+using LinqToDB.Extensions;
+using DevExpress.DataAccess.DataFederation;
+using LinqToDB.Reflection;
+using LinqToDB.SqlQuery;
+using DevExpress.XtraRichEdit;
+using TableOptions = LinqToDB.TableOptions;
 
 namespace CatenarySupport.Database
 {
     internal class SQLite : IDatabase
     {
+
+
+        static IMapper mapper;
+        static readonly Dictionary<Type, Type> mapping_types = new Dictionary<Type, Type>();
+        static MapperConfiguration configuration = new MapperConfiguration(cfg =>
+        {
+            cfg.AddExpressionMapping();
+
+            cfg.CreateProjection<MastObject, MastTable>();
+            cfg.CreateProjection<MastTable, MastObject>();
+
+            cfg.CreateProjection<MastTypeObject, MastTypeTable>();
+            cfg.CreateProjection<MastTypeTable, MastTypeObject>();
+
+            cfg.CreateProjection<PlantObject, PlantTable>();
+            cfg.CreateProjection<PlantTable, PlantObject>();
+
+            cfg.CreateProjection<DistrictObject, DistrictTable>();
+            cfg.CreateProjection<DistrictTable, DistrictObject>();
+
+            cfg.CreateMap<MastObject, MastTable>().ReverseMap();
+            cfg.CreateMap<MastTypeObject, MastTypeTable>().ReverseMap();
+            cfg.CreateMap<PlantObject, PlantTable>().ReverseMap();
+            cfg.CreateMap<DistrictObject, DistrictTable>().ReverseMap();
+
+        });
+
+        static SQLite()
+        {
+            mapping_types.AddTypeMapping(configuration, typeof(MastObject), typeof(MastTable));
+            mapping_types.AddTypeMapping(configuration, typeof(MastTable), typeof(MastObject));
+
+            mapping_types.AddTypeMapping(configuration, typeof(MastTypeObject), typeof(MastTypeTable));
+            mapping_types.AddTypeMapping(configuration, typeof(MastTypeTable), typeof(MastTypeObject));
+
+            mapping_types.AddTypeMapping(configuration, typeof(PlantObject), typeof(PlantTable));
+            mapping_types.AddTypeMapping(configuration, typeof(PlantTable), typeof(PlantObject));
+
+            mapping_types.AddTypeMapping(configuration, typeof(DistrictObject), typeof(DistrictTable));
+            mapping_types.AddTypeMapping(configuration, typeof(DistrictTable), typeof(DistrictObject));
+
+            mapper = configuration.CreateMapper();
+        }
+
         DataContext context;
         public SQLite(IConfigurationProvider сonfigurationProvider)
         {
@@ -13,33 +71,74 @@ namespace CatenarySupport.Database
 
         public void Delete<T>(T obj) where T : class, new()
         {
-            context.Delete(obj);
+            var projected_type = MapperExtensions.ReplaceType(mapping_types, typeof(T));
+            var methtod_info = typeof(DataExtensions).GetMethod("Delete"); ;
+            var methtod_ref = methtod_info!.MakeGenericMethod(projected_type);
+
+            var table = mapper.Map(obj, typeof(T), projected_type);
+            var returned_data = methtod_ref.Invoke(this, new[] { context, table, default(string), default(string), default(string), default(string), default(TableOptions) });
         }
 
         public void Delete<T>(Expression<Func<T, bool>> expression) where T : class, new()
         {
-            context.GetTable<T>().Delete(expression);
+            throw new NotImplementedException();
+
+            //context.GetTable<T>().Delete(expression);
         }
 
         public void Insert<T>(T obj) where T : class, new()
         {
-            context.CreateTable<T>(tableOptions: TableOptions.CreateIfNotExists);
-            context.Insert(obj);
+            var projected_type = MapperExtensions.ReplaceType(mapping_types, typeof(T));
+
+            //creaetable if not exist
+            var methtod_info = typeof(DataExtensions).GetMethods()
+                .Where(m => m.Name == "CreateTable")
+                .Single();
+            var methtod_ref = methtod_info!.MakeGenericMethod(projected_type);
+
+            var returned_data = methtod_ref.Invoke(this, new object[] { context, default(string)!, default(string)!, default(string)!, default(string)!, 
+                default(string)!, DefaultNullable.Null, default(string)!, TableOptions.CreateIfNotExists });
+
+            //insert data
+            methtod_info = typeof(DataExtensions).GetMethods()
+                .Where(m => m.Name ==  "Insert" && m.GetParameters().Length == 7)
+                .Single();
+            methtod_ref = methtod_info!.MakeGenericMethod(projected_type);
+
+            var table = mapper.Map(obj, typeof(T), projected_type);
+
+            returned_data = methtod_ref.Invoke(this, new object[] { context, table, default(string)!, default(string)!, default(string)!, default(string)!, default(TableOptions) });
         }
 
         public IEnumerable<T> Select<T>() where T : class, new()
         {
-            return context.GetTable<T>();
+            var projected_type = MapperExtensions.ReplaceType(mapping_types, typeof(T));
+
+            var methtod_info = typeof(DataExtensions).GetMethodEx("GetTable", typeof(DataContext));
+            var methtod_ref = methtod_info!.MakeGenericMethod(projected_type);
+            var returned_data = methtod_ref.Invoke(this, new[] { context });
+            
+            return (returned_data as IQueryable).ProjectTo<T>(configuration);
         }
 
         public IEnumerable<T> Select<T>(Expression<Func<T, bool>> expression) where T : class, new()
         {
-            return context.GetTable<T>().Where(expression);
+            throw new NotImplementedException();
+
+            //return context.GetTable<T>().Where(expression);
         }
 
         public void Update<T>(T obj) where T : class, new()
         {
-            context.Update(obj);
+            var projected_type = MapperExtensions.ReplaceType(mapping_types, typeof(T));
+            var methtod_info = typeof(DataExtensions).GetMethods()
+                .Where(m => m.Name == "Update" && m.GetParameters().Length == 7)
+                .Single();
+            var methtod_ref = methtod_info!.MakeGenericMethod(projected_type);
+
+            var table = mapper.Map(obj, typeof(T), projected_type);
+
+            var returned_data = methtod_ref.Invoke(this, new object[] { context, table, default(string)!, default(string)!, default(string)!, default(string)!, default(TableOptions) });
         }
 
         public bool TestConnection()

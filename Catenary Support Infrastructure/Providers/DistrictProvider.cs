@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers
 {
-    internal class DistrictProvider : IProvider<DistrictData>
+    internal class DistrictProvider : IProvider<DistrictObject>
     {
         private readonly IDatabase database;
         public DistrictProvider(IDatabase db)
@@ -14,32 +14,32 @@ namespace CatenarySupport.Providers
             //database.CreateTable<DistrictData>(tableOptions: TableOptions.CreateIfNotExists);
         }
 
-        public void Insert(DistrictData model)
+        public void Insert(DistrictObject model)
         {
             database.Insert(model);
         }
 
-        public void Delete(DistrictData model)
+        public void Delete(DistrictObject model)
         {
             database.Delete(model);
         }
-        public void Delete(Expression<Func<DistrictData, bool>> predicate)
+        public void Delete(Expression<Func<DistrictObject, bool>> predicate)
         {
             database.Delete(predicate);
         }
 
-        public IEnumerable<DistrictData> Select()
+        public IEnumerable<DistrictObject> Select()
         {
             
-            return database.Select<DistrictData>();
+            return database.Select<DistrictObject>();
         }
 
-        public IEnumerable<DistrictData> Get(Expression<Func<DistrictData, bool>> predicate)
+        public IEnumerable<DistrictObject> Select(Expression<Func<DistrictObject, bool>> predicate)
         {
             return database.Select(predicate);
         }
 
-        public void Update(DistrictData model)
+        public void Update(DistrictObject model)
         {
             database.Update(model);
         }

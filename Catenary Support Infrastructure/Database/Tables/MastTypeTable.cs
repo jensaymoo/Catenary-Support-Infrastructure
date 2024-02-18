@@ -4,12 +4,12 @@ using System.ComponentModel;
 namespace CatenarySupport.Database.Tables
 {
     [Table("стойки")]
-    public class MastTypeData
+    public class MastTypeTable
     {
-        [Column("тип_стк"), DisplayName("Тип стойки"), DataType("TEXT")]
+        [Column("тип_стк"), DataType("TEXT")]
         public string? MastType { get; set; }
 
-        [Column("мат_стк"), DisplayName("Материал"), DataType("TEXT")]
+        [Column("мат_стк"), DataType("TEXT")]
         public string? MastMaterial { get; set; }
 
     }

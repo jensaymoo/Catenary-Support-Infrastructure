@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace CatenarySupport.Database.Tables
 {
     [Table("участки")]
-    public class DistrictData
+    public class DistrictTable
     {
         [Column("участок"), DisplayName("Участок"), DataType("TEXT")]
         public string? District { get; set; }

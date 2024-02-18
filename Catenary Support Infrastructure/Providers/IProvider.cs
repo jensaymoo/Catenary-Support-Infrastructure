@@ -15,7 +15,7 @@ namespace CatenarySupport.Providers
         public void Delete(Expression<Func<T, bool>> predicate);
 
         public IEnumerable<T> Select();
-        public IEnumerable<T> Get(Expression<Func<T, bool>> predicate);
+        public IEnumerable<T> Select(Expression<Func<T, bool>> predicate);
 
     }
 }
