@@ -33,10 +33,15 @@ namespace CatenarySupport.Database
             cfg.CreateProjection<DistrictObject, DistrictTable>();
             cfg.CreateProjection<DistrictTable, DistrictObject>();
 
+            cfg.CreateProjection<ProtocolObject, ProtocolTable>();
+            cfg.CreateProjection<ProtocolTable, ProtocolObject>();
+
+
             cfg.CreateMap<MastObject, MastTable>().ReverseMap();
             cfg.CreateMap<MastTypeObject, MastTypeTable>().ReverseMap();
             cfg.CreateMap<PlantObject, PlantTable>().ReverseMap();
             cfg.CreateMap<DistrictObject, DistrictTable>().ReverseMap();
+            cfg.CreateMap<ProtocolObject, ProtocolTable>().ReverseMap();
 
         });
 
@@ -54,6 +59,9 @@ namespace CatenarySupport.Database
             mapping_types.AddTypeMapping(configuration, typeof(DistrictObject), typeof(DistrictTable));
             mapping_types.AddTypeMapping(configuration, typeof(DistrictTable), typeof(DistrictObject));
 
+            mapping_types.AddTypeMapping(configuration, typeof(ProtocolObject), typeof(ProtocolTable));
+            mapping_types.AddTypeMapping(configuration, typeof(ProtocolTable), typeof(ProtocolObject));
+
             mapper = configuration.CreateMapper();
         }
 
@@ -66,11 +74,22 @@ namespace CatenarySupport.Database
         public void Delete<T>(T obj) where T : class, new()
         {
             var projected_type = MapperExtensions.ReplaceType(mapping_types, typeof(T));
-            var methtod_info = typeof(DataExtensions).GetMethod("Delete"); ;
+
+            //create table if not exist
+            var methtod_info = typeof(DataExtensions).GetMethods()
+                .Where(m => m.Name == "CreateTable")
+                .Single();
             var methtod_ref = methtod_info!.MakeGenericMethod(projected_type);
 
+            var returned_data = methtod_ref.Invoke(this, new object[] { context, default(string)!, default(string)!, default(string)!, default(string)!,
+                default(string)!, DefaultNullable.Null, default(string)!, TableOptions.CreateIfNotExists });
+
+            //delete data
+            methtod_info = typeof(DataExtensions).GetMethod("Delete"); ;
+            methtod_ref = methtod_info!.MakeGenericMethod(projected_type);
+
             var table = mapper.Map(obj, typeof(T), projected_type);
-            var returned_data = methtod_ref.Invoke(this, new[] { context, table, default(string), default(string), default(string), default(string), default(TableOptions) });
+            returned_data = methtod_ref.Invoke(this, new[] { context, table, default(string), default(string), default(string), default(string), default(TableOptions) });
         }
 
         public void Delete<T>(Expression<Func<T, bool>> expression) where T : class, new()
@@ -84,7 +103,7 @@ namespace CatenarySupport.Database
         {
             var projected_type = MapperExtensions.ReplaceType(mapping_types, typeof(T));
 
-            //creaetable if not exist
+            //create table if not exist
             var methtod_info = typeof(DataExtensions).GetMethods()
                 .Where(m => m.Name == "CreateTable")
                 .Single();
@@ -108,9 +127,19 @@ namespace CatenarySupport.Database
         {
             var projected_type = MapperExtensions.ReplaceType(mapping_types, typeof(T));
 
-            var methtod_info = typeof(DataExtensions).GetMethodEx("GetTable", typeof(DataContext));
+            //create table if not exist
+            var methtod_info = typeof(DataExtensions).GetMethods()
+                .Where(m => m.Name == "CreateTable")
+                .Single();
             var methtod_ref = methtod_info!.MakeGenericMethod(projected_type);
-            var returned_data = methtod_ref.Invoke(this, new[] { context });
+
+            var returned_data = methtod_ref.Invoke(this, new object[] { context, default(string)!, default(string)!, default(string)!, default(string)!,
+                default(string)!, DefaultNullable.Null, default(string)!, TableOptions.CreateIfNotExists });
+
+            //select data
+            methtod_info = typeof(DataExtensions).GetMethodEx("GetTable", typeof(DataContext));
+            methtod_ref = methtod_info!.MakeGenericMethod(projected_type);
+            returned_data = methtod_ref.Invoke(this, new[] { context });
             
             return (returned_data as IQueryable).ProjectTo<T>(configuration);
         }

@@ -14,6 +14,7 @@ namespace CatenarySupport.Providers
 
         public void Insert(ProtocolObject model)
         {
+            model.UUID = Guid.NewGuid().ToString();
             database.Insert(model);
         }
 

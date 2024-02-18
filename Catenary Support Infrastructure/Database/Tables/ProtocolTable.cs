@@ -23,10 +23,10 @@ namespace CatenarySupport.Database.Tables
         [Column("protocol_date"), DataType("TEXT")]
         public string? ProtocolDate { get; set; }
 
-        [DisplayName("foreman"), DataType("TEXT")]
+        [Column("foreman"), DataType("TEXT")]
         public string? Foreman { get; set; }
 
-        [DisplayName("notes"), , DataType("TEXT")]
+        [Column("notes"), DataType("TEXT")]
         public string? Notes { get; set; }
     }
 }
