@@ -1,18 +1,12 @@
-﻿using LinqToDB;
-using System.Linq.Expressions;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.Extensions.ExpressionMapping;
-using CatenarySupport.Database.Tables;
-using CatenarySupport.Providers;
-using DevExpress.Xpf.Editors.RangeControl.Internal;
 using AutoMapper.QueryableExtensions;
-using System.Linq;
-using System.Collections;
+using CatenarySupport.Database.Tables;
+using CatenarySupport.Providers.Objects;
+using LinqToDB;
 using LinqToDB.Extensions;
-using DevExpress.DataAccess.DataFederation;
-using LinqToDB.Reflection;
 using LinqToDB.SqlQuery;
-using DevExpress.XtraRichEdit;
+using System.Linq.Expressions;
 using TableOptions = LinqToDB.TableOptions;
 
 namespace CatenarySupport.Database

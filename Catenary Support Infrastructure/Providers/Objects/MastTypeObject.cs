@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 
 
-namespace CatenarySupport.Providers
+namespace CatenarySupport.Providers.Objects
 {
     public class MastTypeObject
     {

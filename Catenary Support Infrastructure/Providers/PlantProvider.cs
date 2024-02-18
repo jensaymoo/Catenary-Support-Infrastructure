@@ -1,6 +1,5 @@
 ﻿using CatenarySupport.Database;
-using CatenarySupport.Database.Tables;
-using LinqToDB;
+using CatenarySupport.Providers.Objects;
 using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers
@@ -11,7 +10,6 @@ namespace CatenarySupport.Providers
         public PlantProvider(IDatabase db)
         {
             datacontext = db;
-            //datacontext.CreateTable<PlantData>(tableOptions: TableOptions.CreateIfNotExists);
         }
 
         public void Insert(PlantObject model)

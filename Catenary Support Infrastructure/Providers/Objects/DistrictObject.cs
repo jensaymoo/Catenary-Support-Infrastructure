@@ -1,7 +1,7 @@
 ﻿using LinqToDB.Mapping;
 using System.ComponentModel;
 
-namespace CatenarySupport.Database.Tables
+namespace CatenarySupport.Providers.Objects
 {
     public class DistrictObject
     {

@@ -1,12 +1,6 @@
 ﻿using CatenarySupport.Database;
-using CatenarySupport.Database.Tables;
-using LinqToDB;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using CatenarySupport.Providers.Objects;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CatenarySupport.Providers
 {
@@ -16,7 +10,6 @@ namespace CatenarySupport.Providers
         public MastTypeProvider(IDatabase db)
         {
             datacontext = db;
-            //datacontext.CreateTable<MastTypeData>(tableOptions: TableOptions.CreateIfNotExists);
         }
 
         public void Insert(MastTypeObject model)

@@ -1,7 +1,6 @@
 ﻿using CatenarySupport.Attributes;
-using CatenarySupport.Database.Tables;
 using CatenarySupport.Providers;
-using DevExpress.Data;
+using CatenarySupport.Providers.Objects;
 using DevExpress.Internal;
 using DevExpress.Xpf.Grid;
 using DevExpress.XtraEditors;
@@ -11,7 +10,6 @@ using LinqToDB.Extensions;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 namespace CatenarySupport
 {
@@ -105,6 +103,8 @@ namespace CatenarySupport
             typeof(MastObject).GetProperties()
                 .Where((p) => p.GetAttribute<DisplayNameAttribute>() == null)
                 .ForEach(f => gridview_masts.Columns[f.Name].Visible = false);
+
+
 
 
         }

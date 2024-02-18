@@ -1,6 +1,5 @@
 ﻿using CatenarySupport.Database;
-using CatenarySupport.Database.Tables;
-using LinqToDB;
+using CatenarySupport.Providers.Objects;
 using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers
@@ -11,7 +10,6 @@ namespace CatenarySupport.Providers
         public DistrictProvider(IDatabase db)
         {
             database = db;
-            //database.CreateTable<DistrictData>(tableOptions: TableOptions.CreateIfNotExists);
         }
 
         public void Insert(DistrictObject model)

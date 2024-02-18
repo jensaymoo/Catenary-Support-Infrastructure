@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using AutoMapper.Extensions.ExpressionMapping;
-
-using CatenarySupport.Database;
-using CatenarySupport.Database.Tables;
+﻿using CatenarySupport.Database;
+using CatenarySupport.Providers.Objects;
 using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers
