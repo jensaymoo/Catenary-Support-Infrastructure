@@ -17,6 +17,8 @@ namespace CatenarySupport.Attributes
 
             OnBindingFunction = (provider) =>
             {
+                if (provider is null) throw new ArgumentNullException(nameof(provider));
+
                 var acessor = new MemberAcessor<object>();
                 if (acessor.TryCallMethodWithoutParams(provider, "Select", out var values))
                 {

@@ -5,40 +5,26 @@ using DevExpress.Internal;
 using DevExpress.Xpf.Grid;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraExport.Helpers;
-using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Grid;
-using DevExpress.XtraVerticalGrid;
 using LinqToDB.Extensions;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace CatenarySupport
 {
     public partial class Main : DevExpress.XtraEditors.XtraForm
     {
-        private readonly Dictionary<Type, object> Providers;
-
         private readonly IProvider<MastObject> MastProvider;
         private readonly IProvider<MastTypeObject> MastTypeProvider;
         private readonly IProvider<PlantObject> PlantProvider;
         private readonly IProvider<DistrictObject> DistrictProvider;
         private readonly IProvider<ProtocolObject> ProtocolProvider;
 
-        public Main(IProvider<MastObject> mast_provider, IProvider<MastTypeObject> mast_type_provider, IProvider<PlantObject> plant_provider, 
+        public Main(IProvider<MastObject> mast_provider, IProvider<MastTypeObject> mast_type_provider, IProvider<PlantObject> plant_provider,
             IProvider<DistrictObject> district_provider, IProvider<ProtocolObject> protocol_provider)
-
         {
-
-            Providers = new Dictionary<Type, object>
-            {
-                    { mast_provider.GetType().GetInterface("IProvider`1")!.GetGenericArguments()[0], mast_provider },
-                    { mast_type_provider.GetType().GetInterface("IProvider`1")!.GetGenericArguments()[0], mast_type_provider },
-                    { plant_provider.GetType().GetInterface("IProvider`1")!.GetGenericArguments()[0], plant_provider },
-                    { district_provider.GetType().GetInterface("IProvider`1")!.GetGenericArguments()[0], district_provider }
-            };
-            
             MastProvider = mast_provider;
             MastTypeProvider = mast_type_provider;
             PlantProvider = plant_provider;
@@ -46,7 +32,6 @@ namespace CatenarySupport
             ProtocolProvider = protocol_provider;
 
             InitializeComponent();
-
         }
 
 
@@ -64,6 +49,7 @@ namespace CatenarySupport
             SetColumnParams(typeof(MastObject), gridcontrol_masts.RepositoryItems);
 
             BindingSource bindingSource_masts = new BindingSource();
+            bindingSource_masts.DataSource = typeof(MastObject);
             bindingSource_masts.AddCollection(MastProvider.Select());
 
             gridcontrol_masts.MainView = gridview_masts;
@@ -79,9 +65,10 @@ namespace CatenarySupport
             };
             gridview_protocols.RowUpdated += Gridview_protocols_RowUpdated;
             gridview_protocols.RowDeleting += Gridview_protocols_RowDeleting;
-            //SetColumnParams(typeof(MastObject), gridcontrol_protocols.RepositoryItems);
+            SetColumnParams(typeof(ProtocolObject), gridcontrol_masts.RepositoryItems);
 
             BindingSource bindingSource_protocols = new BindingSource();
+            bindingSource_protocols.DataSource = typeof(ProtocolObject);
             bindingSource_protocols.AddCollection(ProtocolProvider.Select());
 
             gridcontrol_protocols.MainView = gridview_protocols;
@@ -176,9 +163,14 @@ namespace CatenarySupport
             var attributes = type.GetProperties()
                 .SelectNotNull((p) => p.GetAttribute<BaseColumnAttribute>()!).ToArray();
 
-            foreach(var att in attributes)
+            var providers = typeof(Main).GetRuntimeFields()
+                .Where(t => t.Name.EndsWith("Provider"))
+                .ToDictionary(a => a.FieldType.GenericTypeArguments[0]);
+
+            foreach (var att in attributes)
             {
-                var arg = Providers.GetValueOrDefault(att!.BindedTable ?? new object().GetType())!;
+                var arg_type = att!.BindedTable ?? new object().GetType();
+                var arg = providers.GetValueOrDefault(arg_type)?.GetValue(this);
 
                 var binding_out = att.OnBindingFunction?.Invoke(arg);
 

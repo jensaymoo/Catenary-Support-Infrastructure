@@ -11,6 +11,6 @@ namespace CatenarySupport.Attributes
     {
         public string? BindedMember { get; protected set; } = null;
         public Type? BindedTable { get; protected set; } = null;
-        public Func<object, RepositoryItem>? OnBindingFunction { get; protected set; } = null;
+        public Func<object?, RepositoryItem>? OnBindingFunction { get; protected set; } = null;
     }
 }
