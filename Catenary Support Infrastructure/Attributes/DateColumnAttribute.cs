@@ -1,4 +1,5 @@
-﻿using DevExpress.XtraEditors.Repository;
+﻿using DevExpress.XtraEditors.Mask.Design;
+using DevExpress.XtraEditors.Repository;
 using System.Runtime.CompilerServices;
 
 namespace CatenarySupport.Attributes
@@ -9,7 +10,7 @@ namespace CatenarySupport.Attributes
         {
             if (bindedMember is null) throw new ArgumentNullException(nameof(bindedMember));
 
-            BindedMember = bindedMember;;
+            BindedMember = bindedMember;
 
             OnBindingFunction = (provider) =>
             {
@@ -17,7 +18,6 @@ namespace CatenarySupport.Attributes
                 {
                     Name = BindedMember,
                 };
-
                 return repo_item;
             };
         }

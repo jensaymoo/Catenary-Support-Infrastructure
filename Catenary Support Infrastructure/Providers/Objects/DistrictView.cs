@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CatenarySupport.Providers.Objects
+namespace CatenarySupport.Providers.Views
 {
-    public class DistrictObject
+    public class DistrictView
     {
         [Display(AutoGenerateField = true, Name = "Участок")]
         public string? District { get; set; }

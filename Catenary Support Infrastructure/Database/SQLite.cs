@@ -2,7 +2,7 @@
 using AutoMapper.Extensions.ExpressionMapping;
 using AutoMapper.QueryableExtensions;
 using CatenarySupport.Database.Tables;
-using CatenarySupport.Providers.Objects;
+using CatenarySupport.Providers.Views;
 using LinqToDB;
 using LinqToDB.Extensions;
 using LinqToDB.SqlQuery;
@@ -21,46 +21,46 @@ namespace CatenarySupport.Database
         {
             cfg.AddExpressionMapping();
 
-            cfg.CreateProjection<MastObject, MastTable>();
-            cfg.CreateProjection<MastTable, MastObject>();
+            cfg.CreateProjection<MastView, MastTable>();
+            cfg.CreateProjection<MastTable, MastView>();
 
-            cfg.CreateProjection<MastTypeObject, MastTypeTable>();
-            cfg.CreateProjection<MastTypeTable, MastTypeObject>();
+            cfg.CreateProjection<MastTypeView, MastTypeTable>();
+            cfg.CreateProjection<MastTypeTable, MastTypeView>();
 
-            cfg.CreateProjection<PlantObject, PlantTable>();
-            cfg.CreateProjection<PlantTable, PlantObject>();
+            cfg.CreateProjection<PlantView, PlantTable>();
+            cfg.CreateProjection<PlantTable, PlantView>();
 
-            cfg.CreateProjection<DistrictObject, DistrictTable>();
-            cfg.CreateProjection<DistrictTable, DistrictObject>();
+            cfg.CreateProjection<DistrictView, DistrictTable>();
+            cfg.CreateProjection<DistrictTable, DistrictView>();
 
-            cfg.CreateProjection<ProtocolObject, ProtocolTable>();
-            cfg.CreateProjection<ProtocolTable, ProtocolObject>();
+            cfg.CreateProjection<ProtocolView, ProtocolTable>();
+            cfg.CreateProjection<ProtocolTable, ProtocolView>();
 
 
-            cfg.CreateMap<MastObject, MastTable>().ReverseMap();
-            cfg.CreateMap<MastTypeObject, MastTypeTable>().ReverseMap();
-            cfg.CreateMap<PlantObject, PlantTable>().ReverseMap();
-            cfg.CreateMap<DistrictObject, DistrictTable>().ReverseMap();
-            cfg.CreateMap<ProtocolObject, ProtocolTable>().ReverseMap();
+            cfg.CreateMap<MastView, MastTable>().ReverseMap();
+            cfg.CreateMap<MastTypeView, MastTypeTable>().ReverseMap();
+            cfg.CreateMap<PlantView, PlantTable>().ReverseMap();
+            cfg.CreateMap<DistrictView, DistrictTable>().ReverseMap();
+            cfg.CreateMap<ProtocolView, ProtocolTable>().ReverseMap();
 
         });
 
         static SQLite()
         {
-            mapping_types.AddTypeMapping(configuration, typeof(MastObject), typeof(MastTable));
-            mapping_types.AddTypeMapping(configuration, typeof(MastTable), typeof(MastObject));
+            mapping_types.AddTypeMapping(configuration, typeof(MastView), typeof(MastTable));
+            mapping_types.AddTypeMapping(configuration, typeof(MastTable), typeof(MastView));
 
-            mapping_types.AddTypeMapping(configuration, typeof(MastTypeObject), typeof(MastTypeTable));
-            mapping_types.AddTypeMapping(configuration, typeof(MastTypeTable), typeof(MastTypeObject));
+            mapping_types.AddTypeMapping(configuration, typeof(MastTypeView), typeof(MastTypeTable));
+            mapping_types.AddTypeMapping(configuration, typeof(MastTypeTable), typeof(MastTypeView));
 
-            mapping_types.AddTypeMapping(configuration, typeof(PlantObject), typeof(PlantTable));
-            mapping_types.AddTypeMapping(configuration, typeof(PlantTable), typeof(PlantObject));
+            mapping_types.AddTypeMapping(configuration, typeof(PlantView), typeof(PlantTable));
+            mapping_types.AddTypeMapping(configuration, typeof(PlantTable), typeof(PlantView));
 
-            mapping_types.AddTypeMapping(configuration, typeof(DistrictObject), typeof(DistrictTable));
-            mapping_types.AddTypeMapping(configuration, typeof(DistrictTable), typeof(DistrictObject));
+            mapping_types.AddTypeMapping(configuration, typeof(DistrictView), typeof(DistrictTable));
+            mapping_types.AddTypeMapping(configuration, typeof(DistrictTable), typeof(DistrictView));
 
-            mapping_types.AddTypeMapping(configuration, typeof(ProtocolObject), typeof(ProtocolTable));
-            mapping_types.AddTypeMapping(configuration, typeof(ProtocolTable), typeof(ProtocolObject));
+            mapping_types.AddTypeMapping(configuration, typeof(ProtocolView), typeof(ProtocolTable));
+            mapping_types.AddTypeMapping(configuration, typeof(ProtocolTable), typeof(ProtocolView));
 
             mapper = configuration.CreateMapper();
         }

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CatenarySupport.Providers.Objects
+namespace CatenarySupport.Providers.Views
 {
-    public class PlantObject
+    public class PlantView
     {
         [Display(AutoGenerateField = true, Name = "Цех")]
         public string? Plant { get; set; }

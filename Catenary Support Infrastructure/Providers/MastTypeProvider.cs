@@ -1,10 +1,10 @@
 ﻿using CatenarySupport.Database;
-using CatenarySupport.Providers.Objects;
+using CatenarySupport.Providers.Views;
 using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers
 {
-    internal class MastTypeProvider : IProvider<MastTypeObject>
+    internal class MastTypeProvider : IProvider<MastTypeView>
     {
         private readonly IDatabase datacontext;
         public MastTypeProvider(IDatabase db)
@@ -12,31 +12,31 @@ namespace CatenarySupport.Providers
             datacontext = db;
         }
 
-        public void Insert(MastTypeObject model)
+        public void Insert(MastTypeView model)
         {
             datacontext.Insert(model);
         }
 
-        public void Delete(MastTypeObject model)
+        public void Delete(MastTypeView model)
         {
             datacontext.Delete(model);
         }
-        public void Delete(Expression<Func<MastTypeObject, bool>> predicate)
+        public void Delete(Expression<Func<MastTypeView, bool>> predicate)
         {
             datacontext.Delete(predicate);
         }
 
-        public IEnumerable<MastTypeObject> Select()
+        public IEnumerable<MastTypeView> Select()
         {
-            return datacontext.Select<MastTypeObject>();
+            return datacontext.Select<MastTypeView>();
         }
 
-        public IEnumerable<MastTypeObject> Select(Expression<Func<MastTypeObject, bool>> predicate)
+        public IEnumerable<MastTypeView> Select(Expression<Func<MastTypeView, bool>> predicate)
         {
-            return datacontext.Select<MastTypeObject>(predicate);
+            return datacontext.Select<MastTypeView>(predicate);
         }
 
-        public void Update(MastTypeObject model)
+        public void Update(MastTypeView model)
         {
             datacontext.Update(model);
         }

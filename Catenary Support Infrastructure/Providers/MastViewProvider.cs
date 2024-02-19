@@ -1,11 +1,11 @@
 ﻿using CatenarySupport.Database;
-using CatenarySupport.Providers.Objects;
+using CatenarySupport.Providers.Views;
 using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers
 {
 
-    internal class MastProvider : IProvider<MastObject>
+    internal class MastViewProvider : IProvider<MastView>
     {
         //private static readonly IMapper mapper;
         private readonly IDatabase datacontext;
@@ -21,44 +21,44 @@ namespace CatenarySupport.Providers
         //    }).CreateMapper();
         //}
 
-        public MastProvider(IDatabase db)
+        public MastViewProvider(IDatabase db)
         {
             datacontext = db;
         }
 
-        public void Insert(MastObject model)
+        public void Insert(MastView model)
         {
             model.UUID = Guid.NewGuid().ToString();
             //datacontext.Insert(mapper.Map<MastTable>(model));
             datacontext.Insert(model);
         }
 
-        public void Delete(MastObject model)
+        public void Delete(MastView model)
         {
             //datacontext.Delete(mapper.Map<MastTable>(model));
             datacontext.Delete(model);
         }
-        public void Delete(Expression<Func<MastObject, bool>> predicate)
+        public void Delete(Expression<Func<MastView, bool>> predicate)
         {
             datacontext.Delete(predicate);
             //datacontext.Delete(mapper.Map<Expression<Func<MastTable, bool>>>(predicate));
         }
 
-        public IEnumerable<MastObject> Select()
+        public IEnumerable<MastView> Select()
         {
-            return datacontext.Select<MastObject>();
+            return datacontext.Select<MastView>();
             //return datacontext.Select<MastTable>()
             //    .Select(s => mapper.Map<MastObject>(s));
         }
 
-        public IEnumerable<MastObject> Select(Expression<Func<MastObject, bool>> predicate)
+        public IEnumerable<MastView> Select(Expression<Func<MastView, bool>> predicate)
         {
-            return datacontext.Select<MastObject>(predicate);
+            return datacontext.Select<MastView>(predicate);
             //return datacontext.Select<MastTable>(mapper.Map<Expression<Func<MastTable, bool>>>(predicate))
             //    .Select(s => mapper.Map<MastObject>(s));
         }
 
-        public void Update(MastObject model)
+        public void Update(MastView model)
         {
             datacontext.Update(model);
            //datacontext.Update(mapper.Map<MastTable>(model));

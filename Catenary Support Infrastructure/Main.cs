@@ -1,29 +1,33 @@
 ﻿using CatenarySupport.Attributes;
 using CatenarySupport.Providers;
-using CatenarySupport.Providers.Objects;
+using CatenarySupport.Providers.Views;
 using DevExpress.Internal;
 using DevExpress.Xpf.Grid;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Grid;
+using FluentValidation;
 using LinqToDB.Extensions;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text;
+using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace CatenarySupport
 {
     public partial class Main : DevExpress.XtraEditors.XtraForm
     {
-        private readonly IProvider<MastObject> MastProvider;
-        private readonly IProvider<MastTypeObject> MastTypeProvider;
-        private readonly IProvider<PlantObject> PlantProvider;
-        private readonly IProvider<DistrictObject> DistrictProvider;
-        private readonly IProvider<ProtocolObject> ProtocolProvider;
+        private readonly IProvider<MastView> MastProvider;
+        private readonly IProvider<MastTypeView> MastTypeProvider;
+        private readonly IProvider<PlantView> PlantProvider;
+        private readonly IProvider<DistrictView> DistrictProvider;
+        private readonly IProvider<ProtocolView> ProtocolProvider;
 
-        public Main(IProvider<MastObject> mast_provider, IProvider<MastTypeObject> mast_type_provider, IProvider<PlantObject> plant_provider,
-            IProvider<DistrictObject> district_provider, IProvider<ProtocolObject> protocol_provider)
+        public Main(IProvider<MastView> mast_provider, IProvider<MastTypeView> mast_type_provider, IProvider<PlantView> plant_provider,
+            IProvider<DistrictView> district_provider, IProvider<ProtocolView> protocol_provider)
         {
             MastProvider = mast_provider;
             MastTypeProvider = mast_type_provider;
@@ -46,10 +50,11 @@ namespace CatenarySupport
             };
             gridview_masts.RowUpdated += Gridview_masts_RowUpdated;
             gridview_masts.RowDeleting += Gridview_masts_RowDeleting;
-            SetColumnParams(typeof(MastObject), gridcontrol_masts.RepositoryItems);
+            gridview_masts.ValidateRow += Gridview_masts_ValidateRow;
+            SetColumnParams(typeof(MastView), gridcontrol_masts.RepositoryItems);
 
             BindingSource bindingSource_masts = new BindingSource();
-            bindingSource_masts.DataSource = typeof(MastObject);
+            bindingSource_masts.DataSource = typeof(MastView);
             bindingSource_masts.AddCollection(MastProvider.Select());
 
             gridcontrol_masts.MainView = gridview_masts;
@@ -65,17 +70,61 @@ namespace CatenarySupport
             };
             gridview_protocols.RowUpdated += Gridview_protocols_RowUpdated;
             gridview_protocols.RowDeleting += Gridview_protocols_RowDeleting;
-            SetColumnParams(typeof(ProtocolObject), gridcontrol_masts.RepositoryItems);
+            gridview_protocols.ValidateRow += Gridview_protocols_ValidateRow;
+            SetColumnParams(typeof(ProtocolView), gridcontrol_masts.RepositoryItems);
 
             BindingSource bindingSource_protocols = new BindingSource();
-            bindingSource_protocols.DataSource = typeof(ProtocolObject);
+            bindingSource_protocols.DataSource = typeof(ProtocolView);
             bindingSource_protocols.AddCollection(ProtocolProvider.Select());
-
             gridcontrol_protocols.MainView = gridview_protocols;
             gridcontrol_protocols.DataSource = bindingSource_protocols;
 
+        }
 
+        private void Gridview_masts_ValidateRow(object sender, DevExpress.XtraGrid.Views.Base.ValidateRowEventArgs e)
+        {
+            var validate_mast = (e.Row as MastView);
+            if (validate_mast!.UUID == null)
+                validate_mast!.UUID = Guid.NewGuid().ToString();
 
+            var result = ValidateViewObject<MastView, MastViewObjectValidator>(validate_mast);
+
+            e.ErrorText = result;
+            e.Valid = result is null;
+        }
+        private void Gridview_protocols_ValidateRow(object sender, DevExpress.XtraGrid.Views.Base.ValidateRowEventArgs e)
+        {
+            var validate_protocol = (e.Row as ProtocolView);
+            if (validate_protocol!.UUID == null)
+                validate_protocol!.UUID = Guid.NewGuid().ToString();
+
+            var result = ValidateViewObject<ProtocolView, ProtocolViewObjectValidator>(validate_protocol);
+
+            e.ErrorText = result;
+            e.Valid = result is null;
+        }
+
+        private static string? ValidateViewObject<T,Y>(T view_model) where Y : AbstractValidator<T>, new() 
+        {
+            var validator = new Y();
+            var result = validator!.Validate(view_model);
+
+            if (!result.IsValid)
+            {
+                var err = new StringBuilder();
+                err.AppendLine("При проверке целостности данных, произошли следующие ошибки:");
+                foreach (var failure in result.Errors)
+                {
+                    var failed_property = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                        .Single(a => a.Name == failure.PropertyName);
+
+                    var display_att = failed_property.GetCustomAttribute(typeof(DisplayAttribute)) as DisplayAttribute;
+                    err.AppendLine($"- поле '{display_att?.Name ?? failure.PropertyName}': " + failure.ToString() + ".");
+                }
+
+                return err.ToString() + "\n";
+            }
+            return null;
         }
 
         private void Gridview_masts_RowDeleting(object sender, DevExpress.Data.RowDeletingEventArgs e)
@@ -86,7 +135,7 @@ namespace CatenarySupport
                 return;
             }
 
-            var deleted_mast = (e.Row as MastObject);
+            var deleted_mast = (e.Row as MastView);
             MastProvider.Delete(deleted_mast!);
 #if DEBUG
             Debug.WriteLine("DELETE MAST UUID: " + deleted_mast!.UUID);
@@ -94,7 +143,7 @@ namespace CatenarySupport
         }
         private void Gridview_masts_RowUpdated(object sender, DevExpress.XtraGrid.Views.Base.RowObjectEventArgs e)
         {
-            var updated_mast = (e.Row as MastObject);
+            var updated_mast = (e.Row as MastView);
 
             if (e.RowHandle == DataControlBase.NewItemRowHandle)
             {
@@ -122,7 +171,7 @@ namespace CatenarySupport
                 return;
             }
 
-            var deleted_protocol = (e.Row as ProtocolObject);
+            var deleted_protocol = (e.Row as ProtocolView);
             ProtocolProvider.Delete(deleted_protocol!);
 #if DEBUG
             Debug.WriteLine("DELETE PROTOCOL UUID: " + deleted_protocol!.UUID);
@@ -130,12 +179,12 @@ namespace CatenarySupport
         }
         private void Gridview_protocols_RowUpdated(object sender, DevExpress.XtraGrid.Views.Base.RowObjectEventArgs e)
         {
-            var updated_protocol = (e.Row as ProtocolObject);
+            var updated_protocol = (e.Row as ProtocolView);
 
             if (e.RowHandle == DataControlBase.NewItemRowHandle)
             {
-                ProtocolProvider.Insert(updated_protocol!);
 
+                ProtocolProvider.Insert(updated_protocol!);
 #if DEBUG
                 Debug.WriteLine("INSERT PROTOCOL UUID: " + updated_protocol!.UUID);
 #endif

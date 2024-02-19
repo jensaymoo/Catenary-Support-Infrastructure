@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CatenarySupport.Providers.Objects
+namespace CatenarySupport.Providers.Views
 {
-    public class MastTypeObject
+    public class MastTypeView
     {
         [Display(AutoGenerateField = true, Name = "Тип стойки")]
         public string? MastType { get; set; }
