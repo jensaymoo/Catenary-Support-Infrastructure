@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers
 {
-    internal class MastTypeProvider : IProvider<MastTypeView>
+    internal class MastTypeProvider : IProviderView<MastTypeView>
     {
         private readonly IDatabase datacontext;
         public MastTypeProvider(IDatabase db)

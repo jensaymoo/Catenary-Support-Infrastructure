@@ -2,7 +2,7 @@
 
 namespace CatenarySupport.Providers.Views
 {
-    public class PlantView
+    public class PlantView : IViewObject
     {
         [Display(AutoGenerateField = true, Name = "Цех")]
         public string? Plant { get; set; }

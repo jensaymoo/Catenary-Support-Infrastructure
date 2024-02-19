@@ -20,14 +20,14 @@ namespace CatenarySupport
 {
     public partial class Main : DevExpress.XtraEditors.XtraForm
     {
-        private readonly IProvider<MastView> MastProvider;
-        private readonly IProvider<MastTypeView> MastTypeProvider;
-        private readonly IProvider<PlantView> PlantProvider;
-        private readonly IProvider<DistrictView> DistrictProvider;
-        private readonly IProvider<ProtocolView> ProtocolProvider;
+        private readonly IProviderView<MastView> MastProvider;
+        private readonly IProviderView<MastTypeView> MastTypeProvider;
+        private readonly IProviderView<PlantView> PlantProvider;
+        private readonly IProviderView<DistrictView> DistrictProvider;
+        private readonly IProviderView<ProtocolView> ProtocolProvider;
 
-        public Main(IProvider<MastView> mast_provider, IProvider<MastTypeView> mast_type_provider, IProvider<PlantView> plant_provider,
-            IProvider<DistrictView> district_provider, IProvider<ProtocolView> protocol_provider)
+        public Main(IProviderView<MastView> mast_provider, IProviderView<MastTypeView> mast_type_provider, IProviderView<PlantView> plant_provider,
+            IProviderView<DistrictView> district_provider, IProviderView<ProtocolView> protocol_provider)
         {
             MastProvider = mast_provider;
             MastTypeProvider = mast_type_provider;
@@ -87,7 +87,7 @@ namespace CatenarySupport
             if (validate_mast!.UUID == null)
                 validate_mast!.UUID = Guid.NewGuid().ToString();
 
-            var result = ValidateViewObject<MastView, MastViewObjectValidator>(validate_mast);
+            var result = ValidateViewObject<MastView, MastViewValidator>(validate_mast);
 
             e.ErrorText = result;
             e.Valid = result is null;
@@ -98,7 +98,7 @@ namespace CatenarySupport
             if (validate_protocol!.UUID == null)
                 validate_protocol!.UUID = Guid.NewGuid().ToString();
 
-            var result = ValidateViewObject<ProtocolView, ProtocolViewObjectValidator>(validate_protocol);
+            var result = ValidateViewObject<ProtocolView, ProtocolViewValidator>(validate_protocol);
 
             e.ErrorText = result;
             e.Valid = result is null;
@@ -213,7 +213,7 @@ namespace CatenarySupport
                 .SelectNotNull((p) => p.GetAttribute<BaseColumnAttribute>()!).ToArray();
 
             var providers = typeof(Main).GetRuntimeFields()
-                .Where(t => t.Name.EndsWith("Provider"))
+                .Where(t => t.Name.EndsWith("ProviderView"))
                 .ToDictionary(a => a.FieldType.GenericTypeArguments[0]);
 
             foreach (var att in attributes)

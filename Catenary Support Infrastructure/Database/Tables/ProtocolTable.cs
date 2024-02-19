@@ -8,22 +8,22 @@ namespace CatenarySupport.Database.Tables
     [Table("protocols")]
     public class ProtocolTable
     {
-        [Column("protocol_uuid"), PrimaryKey, DataType("TEXT")]
+        [Column("protocol_uuid"), PrimaryKey, NotNull, DataType("TEXT")]
         public string UUID { get; set; }
 
-        [Column("plant"), DataType("TEXT")]
+        [Column("plant"), NotNull, DataType("TEXT")]
         public string? Plant { get; set; }
 
-        [Column("district"), DataType("TEXT")]
+        [Column("district"), NotNull, DataType("TEXT")]
         public string? District { get; set; }
 
-        [Column("protocol_id"), DataType("INTEGER")]
+        [Column("protocol_id"), NotNull, DataType("INTEGER")]
         public int ProtocolID { get; set; }
 
-        [Column("protocol_date"), DataType("TEXT")]
+        [Column("protocol_date"), NotNull, DataType("DATE")]
         public string? ProtocolDate { get; set; }
 
-        [Column("foreman"), DataType("TEXT")]
+        [Column("foreman"), NotNull, DataType("TEXT")]
         public string? Foreman { get; set; }
 
         [Column("notes"), DataType("TEXT")]

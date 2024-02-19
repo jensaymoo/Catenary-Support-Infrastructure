@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers
 {
-    internal class DistrictViewProvider : IProvider<DistrictView>
+    internal class DistrictViewProvider : IProviderView<DistrictView>
     {
         private readonly IDatabase database;
         public DistrictViewProvider(IDatabase db)

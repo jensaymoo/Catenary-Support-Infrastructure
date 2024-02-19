@@ -2,7 +2,7 @@
 
 namespace CatenarySupport.Providers.Views
 {
-    public class DistrictView
+    public class DistrictView: IViewObject
     {
         [Display(AutoGenerateField = true, Name = "Участок")]
         public string? District { get; set; }

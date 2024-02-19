@@ -2,7 +2,7 @@
 
 namespace CatenarySupport.Providers.Views
 {
-    public class MastTypeView
+    public class MastTypeView : IViewObject
     {
         [Display(AutoGenerateField = true, Name = "Тип стойки")]
         public string? MastType { get; set; }

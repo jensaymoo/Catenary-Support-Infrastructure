@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers
 {
-    internal class ProtocolViewProvider : IProvider<ProtocolView>
+    internal class ProtocolViewProvider : IProviderView<ProtocolView>
     {
         private readonly IDatabase database;
         public ProtocolViewProvider(IDatabase db)

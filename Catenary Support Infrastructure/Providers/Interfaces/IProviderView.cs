@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using CatenarySupport.Providers.Views;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CatenarySupport.Providers
 {
-    public interface IProvider<T> where T : class
+    public interface IProviderView<T> where T : class, IViewObject
     {
         public void Insert(T model);
         public void Update(T model);

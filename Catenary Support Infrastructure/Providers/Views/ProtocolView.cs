@@ -1,6 +1,4 @@
 ﻿using CatenarySupport.Attributes;
-using DevExpress.Mvvm.DataAnnotations;
-using DevExpress.Xpf.Editors.Helpers;
 using FluentValidation;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace CatenarySupport.Providers.Views
 {
-    public class ProtocolView
+    public class ProtocolView : IViewObject
     {
         [Display(AutoGenerateField = false)]
         public string? UUID { get; set; }
@@ -31,9 +29,9 @@ namespace CatenarySupport.Providers.Views
         [Display(AutoGenerateField = true, Name = "Примечания"), NotNull, MultilineTextColumn]
         public string? Notes { get; set; }
     }
-    internal class ProtocolViewObjectValidator : AbstractValidator<ProtocolView>
+    internal class ProtocolViewValidator : AbstractValidator<ProtocolView>
     {
-        public ProtocolViewObjectValidator()
+        public ProtocolViewValidator()
         {
             RuleFor(opt => opt.UUID)
                 .NotEmpty().WithMessage("должно быть заполнено");

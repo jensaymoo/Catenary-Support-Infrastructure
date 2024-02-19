@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CatenarySupport.Providers.Views
 {
-    public class MastView
+    public class MastView : IViewObject
     {
         [Display(AutoGenerateField = false, Name = "mast_uuid"), ReadOnly(true)]
         public string UUID { get; set; }
@@ -48,9 +48,9 @@ namespace CatenarySupport.Providers.Views
         public string? Notes { get; set; }
 
     }
-    internal class MastViewObjectValidator : AbstractValidator<MastView>
+    internal class MastViewValidator : AbstractValidator<MastView>
     {
-        public MastViewObjectValidator()
+        public MastViewValidator()
         {
             RuleFor(opt => opt.UUID)
                 .NotEmpty().WithMessage("должно быть заполнено");
