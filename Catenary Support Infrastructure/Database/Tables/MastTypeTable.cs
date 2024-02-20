@@ -6,6 +6,9 @@ namespace CatenarySupport.Database.Tables
     [Table("стойки")]
     public class MastTypeTable
     {
+        [Column("masttype_uuid"), PrimaryKey, NotNull, DataType("TEXT")]
+        public string UUID { get; set; }
+
         [Column("тип_стк"), DataType("TEXT")]
         public string? MastType { get; set; }
 
