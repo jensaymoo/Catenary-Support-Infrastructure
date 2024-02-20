@@ -33,31 +33,25 @@ namespace CatenarySupport.Providers
         {
             view.UUID = Guid.NewGuid().ToString();
             datacontext.Insert(mapper.Map<MastData>(view));
-            //datacontext.Insert(view);
         }
 
         public void Delete(MastView view)
         {
             datacontext.Delete(mapper.Map<MastData>(view));
-            //datacontext.Delete(view);
         }
         public void Delete(Expression<Func<MastView, bool>> predicate)
         {
             datacontext.Delete(mapper.Map<Expression<Func<MastData, bool>>>(predicate));
-            //datacontext.Delete(predicate);
-
         }
 
         public IEnumerable<MastView> Select()
         {
-            //return datacontext.Select<MastView>();
             return datacontext.Select<MastData>()
                 .Select(s => mapper.Map<MastView>(s));
         }
 
         public IEnumerable<MastView> Select(Expression<Func<MastView, bool>> predicate)
         {
-            //return datacontext.Select<MastView>(predicate);
             return datacontext.Select<MastData>(mapper.Map<Expression<Func<MastData, bool>>>(predicate))
                 .Select(s => mapper.Map<MastView>(s));
         }
@@ -65,8 +59,6 @@ namespace CatenarySupport.Providers
         public void Update(MastView view)
         {
             datacontext.Update(mapper.Map<MastData>(view));
-            //datacontext.Update(view);
-
         }
     }
 }

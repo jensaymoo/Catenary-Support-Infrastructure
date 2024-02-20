@@ -32,30 +32,25 @@ namespace CatenarySupport.Providers
             view.UUID = Guid.NewGuid().ToString();
             view.ProtocolDate = DateTime.Parse(view.ProtocolDate).ToString("dd.MM.yyyy");
             datacontext.Insert(mapper.Map<ProtocolData>(view));
-            //datacontext.Insert(view);
         }
 
         public void Delete(ProtocolView view)
         {
             datacontext.Delete(mapper.Map<ProtocolData>(view));
-            //datacontext.Delete(view);
         }
         public void Delete(Expression<Func<ProtocolView, bool>> predicate)
         {
             datacontext.Delete(mapper.Map<Expression<Func<ProtocolData, bool>>>(predicate));
-            //datacontext.Delete(predicate);
         }
 
         public IEnumerable<ProtocolView> Select()
         {
-            //return datacontext.Select<ProtocolView>();
             return datacontext.Select<ProtocolData>()
                 .Select(s => mapper.Map<ProtocolView>(s));
         }
 
         public IEnumerable<ProtocolView> Select(Expression<Func<ProtocolView, bool>> predicate)
         {
-            //return datacontext.Select(predicate);
             return datacontext.Select<ProtocolData>(mapper.Map<Expression<Func<ProtocolData, bool>>>(predicate))
                 .Select(s => mapper.Map<ProtocolView>(s));
         }
@@ -64,9 +59,6 @@ namespace CatenarySupport.Providers
         {
             view.ProtocolDate = DateTime.Parse(view.ProtocolDate).ToString("dd.MM.yyyy");
             datacontext.Update(mapper.Map<ProtocolData>(view));
-            //datacontext.Update(view);
         }
-
-
     }
 }
