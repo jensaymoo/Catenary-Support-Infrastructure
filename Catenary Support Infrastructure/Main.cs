@@ -20,20 +20,20 @@ namespace CatenarySupport
 {
     public partial class Main : DevExpress.XtraEditors.XtraForm
     {
-        private readonly IProviderView<MastView> MastProvider;
-        private readonly IProviderView<MastTypeView> MastTypeProvider;
-        private readonly IProviderView<PlantView> PlantProvider;
-        private readonly IProviderView<DistrictView> DistrictProvider;
-        private readonly IProviderView<ProtocolView> ProtocolProvider;
+        private readonly IViewProvider<MastView> MastViewProvider;
+        private readonly IViewProvider<MastTypeView> MastTypeViewProvider;
+        private readonly IViewProvider<PlantView> PlantViewProvider;
+        private readonly IViewProvider<DistrictView> DistrictViewProvider;
+        private readonly IViewProvider<ProtocolView> ProtocolViewProvider;
 
-        public Main(IProviderView<MastView> mast_provider, IProviderView<MastTypeView> mast_type_provider, IProviderView<PlantView> plant_provider,
-            IProviderView<DistrictView> district_provider, IProviderView<ProtocolView> protocol_provider)
+        public Main(IViewProvider<MastView> mast_provider, IViewProvider<MastTypeView> mast_type_provider, IViewProvider<PlantView> plant_provider,
+            IViewProvider<DistrictView> district_provider, IViewProvider<ProtocolView> protocol_provider)
         {
-            MastProvider = mast_provider;
-            MastTypeProvider = mast_type_provider;
-            PlantProvider = plant_provider;
-            DistrictProvider = district_provider;
-            ProtocolProvider = protocol_provider;
+            MastViewProvider = mast_provider;
+            MastTypeViewProvider = mast_type_provider;
+            PlantViewProvider = plant_provider;
+            DistrictViewProvider = district_provider;
+            ProtocolViewProvider = protocol_provider;
 
             InitializeComponent();
         }
@@ -55,7 +55,7 @@ namespace CatenarySupport
 
             BindingSource bindingSource_masts = new BindingSource();
             bindingSource_masts.DataSource = typeof(MastView);
-            bindingSource_masts.AddCollection(MastProvider.Select());
+            bindingSource_masts.AddCollection(MastViewProvider.Select());
 
             gridcontrol_masts.MainView = gridview_masts;
             gridcontrol_masts.DataSource = bindingSource_masts;
@@ -75,7 +75,7 @@ namespace CatenarySupport
 
             BindingSource bindingSource_protocols = new BindingSource();
             bindingSource_protocols.DataSource = typeof(ProtocolView);
-            bindingSource_protocols.AddCollection(ProtocolProvider.Select());
+            bindingSource_protocols.AddCollection(ProtocolViewProvider.Select());
             gridcontrol_protocols.MainView = gridview_protocols;
             gridcontrol_protocols.DataSource = bindingSource_protocols;
 
@@ -136,7 +136,7 @@ namespace CatenarySupport
             }
 
             var deleted_mast = (e.Row as MastView);
-            MastProvider.Delete(deleted_mast!);
+            MastViewProvider.Delete(deleted_mast!);
 #if DEBUG
             Debug.WriteLine("DELETE MAST UUID: " + deleted_mast!.UUID);
 #endif
@@ -147,7 +147,7 @@ namespace CatenarySupport
 
             if (e.RowHandle == DataControlBase.NewItemRowHandle)
             {
-                MastProvider.Insert(updated_mast!);
+                MastViewProvider.Insert(updated_mast!);
 
 #if DEBUG
                 Debug.WriteLine("INSERT MAST UUID: " + updated_mast!.UUID);
@@ -156,7 +156,7 @@ namespace CatenarySupport
             else
             {
 
-                MastProvider.Update(updated_mast!);
+                MastViewProvider.Update(updated_mast!);
 #if DEBUG
                 Debug.WriteLine("UPDATE MAST UUID: " + updated_mast!.UUID);
 #endif        
@@ -172,7 +172,7 @@ namespace CatenarySupport
             }
 
             var deleted_protocol = (e.Row as ProtocolView);
-            ProtocolProvider.Delete(deleted_protocol!);
+            ProtocolViewProvider.Delete(deleted_protocol!);
 #if DEBUG
             Debug.WriteLine("DELETE PROTOCOL UUID: " + deleted_protocol!.UUID);
 #endif
@@ -184,7 +184,7 @@ namespace CatenarySupport
             if (e.RowHandle == DataControlBase.NewItemRowHandle)
             {
 
-                ProtocolProvider.Insert(updated_protocol!);
+                ProtocolViewProvider.Insert(updated_protocol!);
 #if DEBUG
                 Debug.WriteLine("INSERT PROTOCOL UUID: " + updated_protocol!.UUID);
 #endif
@@ -192,7 +192,7 @@ namespace CatenarySupport
             else
             {
 
-                ProtocolProvider.Update(updated_protocol!);
+                ProtocolViewProvider.Update(updated_protocol!);
 #if DEBUG
                 Debug.WriteLine("UPDATE PROTOCOL UUID: " + updated_protocol!.UUID);
 #endif
@@ -213,7 +213,7 @@ namespace CatenarySupport
                 .SelectNotNull((p) => p.GetAttribute<BaseColumnAttribute>()!).ToArray();
 
             var providers = typeof(Main).GetRuntimeFields()
-                .Where(t => t.Name.EndsWith("ProviderView"))
+                .Where(t => t.FieldType.IsAssignableToGeneric(typeof(IViewProvider<>)))
                 .ToDictionary(a => a.FieldType.GenericTypeArguments[0]);
 
             foreach (var att in attributes)

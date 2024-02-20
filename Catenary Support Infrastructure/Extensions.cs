@@ -47,5 +47,29 @@ namespace CatenarySupport
                     yield return value.Value;
             }
         }
+        public static bool IsAssignableToGeneric(
+            this Type assignableFrom,
+            Type assignableTo)
+        {
+            bool IsType(Type comparand)
+                => assignableTo.IsAssignableFrom(comparand)
+                    || (comparand.IsGenericType
+                    && comparand.GetGenericTypeDefinition() == assignableTo);
+
+            while (assignableFrom != null)
+            {
+                if (IsType(assignableFrom)
+                    || assignableFrom
+                    .GetInterfaces()
+                    .Any(IsType))
+                {
+                    return true;
+                }
+
+                assignableFrom = assignableFrom.BaseType;
+            }
+
+            return false;
+        }
     }
 }

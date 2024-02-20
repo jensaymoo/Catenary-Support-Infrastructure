@@ -32,7 +32,7 @@ namespace CatenarySupport
                     .InstancePerLifetimeScope();
 
                 builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
-                    .Where(t => t.Name.EndsWith("ProviderView"))
+                    .Where(t => t.Name.EndsWith("ViewProvider"))
                     .AsImplementedInterfaces()
                     .InstancePerLifetimeScope();
 

@@ -8,8 +8,8 @@ namespace CatenarySupport.Providers.Views
 {
     public class MastView : IViewObject
     {
-        [Display(AutoGenerateField = false, Name = "mast_uuid"), ReadOnly(true)]
-        public string UUID { get; set; }
+        [Display(AutoGenerateField = false), ReadOnly(true)]
+        public string? UUID { get; set; }
 
         [Display(AutoGenerateField = true, Name = "Цех"), BindedGridColumn(typeof(PlantView))]
         public string? Plant { get; set; }

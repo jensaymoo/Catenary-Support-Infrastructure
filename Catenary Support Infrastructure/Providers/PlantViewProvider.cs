@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers
 {
-    internal class PlantViewProvider : IProviderView<PlantView>
+    internal class PlantViewProvider : IViewProvider<PlantView>
     {
         private readonly IDatabase datacontext;
         public PlantViewProvider(IDatabase db)

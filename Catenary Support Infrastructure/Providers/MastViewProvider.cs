@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 namespace CatenarySupport.Providers
 {
 
-    internal class MastViewProvider : IProviderView<MastView>
+    internal class MastViewProvider : IViewProvider<MastView>
     {
         //private static readonly IMapper mapper;
         private readonly IDatabase datacontext;

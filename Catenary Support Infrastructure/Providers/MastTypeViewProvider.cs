@@ -4,10 +4,10 @@ using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers
 {
-    internal class MastTypeProvider : IProviderView<MastTypeView>
+    internal class MastTypeViewProvider : IViewProvider<MastTypeView>
     {
         private readonly IDatabase datacontext;
-        public MastTypeProvider(IDatabase db)
+        public MastTypeViewProvider(IDatabase db)
         {
             datacontext = db;
         }

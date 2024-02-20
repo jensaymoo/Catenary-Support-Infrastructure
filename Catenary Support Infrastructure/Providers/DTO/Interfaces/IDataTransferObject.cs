@@ -2,5 +2,6 @@
 {
     public interface IDataTransferObject
     {
+         string UUID { get; set; }
     }
 }

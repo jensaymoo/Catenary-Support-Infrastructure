@@ -2,5 +2,6 @@
 {
     public interface IViewObject
     {
+        string? UUID { get; set; }
     }
 }

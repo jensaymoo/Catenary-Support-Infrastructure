@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers
 {
-    public interface IProviderView<T> where T : class, IViewObject
+    public interface IViewProvider<T> where T : class, IViewObject
     {
         public void Insert(T model);
         public void Update(T model);
