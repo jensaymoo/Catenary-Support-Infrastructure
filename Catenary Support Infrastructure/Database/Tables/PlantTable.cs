@@ -7,7 +7,7 @@ namespace CatenarySupport.Database.Tables
     public class PlantTable
     {
         [Column("plant_uuid"), PrimaryKey, NotNull, DataType("TEXT")]
-        public string UUID { get; set; }
+        public string? UUID { get; set; }
 
         [Column("цех"), DisplayName("Цех"), DataType("TEXT")]
         public string? Plant { get; set; }

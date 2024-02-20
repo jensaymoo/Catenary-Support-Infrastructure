@@ -8,7 +8,7 @@ namespace CatenarySupport.Providers.Views
 {
     public class ProtocolView : IViewObject
     {
-        [Display(AutoGenerateField = false)]
+        [Display(AutoGenerateField = false), ReadOnly(true)]
         public string? UUID { get; set; }
 
         [Display(AutoGenerateField = true, Name = "Цех"), NotNull, BindedGridColumn(typeof(PlantView))]

@@ -2,7 +2,7 @@
 {
     public class MastTypeData : IDataObject
     {
-        public string UUID { get; set; }
+        public string? UUID { get; set; }
 
         public string? MastType { get; set; }
 

@@ -9,7 +9,7 @@ namespace CatenarySupport.Database.Tables
     public class ProtocolTable
     {
         [Column("protocol_uuid"), PrimaryKey, NotNull, DataType("TEXT")]
-        public string UUID { get; set; }
+        public string? UUID { get; set; }
 
         [Column("plant"), NotNull, DataType("TEXT")]
         public string? Plant { get; set; }

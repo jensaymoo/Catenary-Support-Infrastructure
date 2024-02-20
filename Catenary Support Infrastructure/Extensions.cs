@@ -66,7 +66,7 @@ namespace CatenarySupport
                     return true;
                 }
 
-                assignableFrom = assignableFrom.BaseType;
+                assignableFrom = assignableFrom.BaseType!;
             }
 
             return false;
