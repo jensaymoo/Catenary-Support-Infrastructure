@@ -1,6 +1,4 @@
-﻿using CatenarySupport.Providers.Views;
-
-namespace CatenarySupport.Providers.DTO
+﻿namespace CatenarySupport.Providers.DTO
 {
     public class MastData : IDataObject
     {

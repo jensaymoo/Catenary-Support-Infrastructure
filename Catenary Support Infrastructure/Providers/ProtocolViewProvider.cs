@@ -3,9 +3,7 @@ using AutoMapper.Extensions.ExpressionMapping;
 using CatenarySupport.Database;
 using CatenarySupport.Providers.DTO;
 using CatenarySupport.Providers.Views;
-using FluentValidation;
 using System.Linq.Expressions;
-using System.Windows.Forms;
 
 namespace CatenarySupport.Providers
 {

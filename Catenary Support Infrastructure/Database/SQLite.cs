@@ -25,23 +25,23 @@ namespace CatenarySupport.Database
             cfg.CreateProjection<MastData, MastTable>();
             cfg.CreateProjection<MastTable, MastData>();
 
-            cfg.CreateProjection<MastTypeView, MastTypeTable>();
-            cfg.CreateProjection<MastTypeTable, MastTypeView>();
+            cfg.CreateProjection<MastTypeData, MastTypeTable>();
+            cfg.CreateProjection<MastTypeTable, MastTypeData>();
 
-            cfg.CreateProjection<PlantView, PlantTable>();
-            cfg.CreateProjection<PlantTable, PlantView>();
+            cfg.CreateProjection<PlantData, PlantTable>();
+            cfg.CreateProjection<PlantTable, PlantData>();
 
-            cfg.CreateProjection<DistrictView, DistrictTable>();
-            cfg.CreateProjection<DistrictTable, DistrictView>();
+            cfg.CreateProjection<DistrictData, DistrictTable>();
+            cfg.CreateProjection<DistrictTable, DistrictData>();
 
             cfg.CreateProjection<ProtocolView, ProtocolData>();
             cfg.CreateProjection<ProtocolData, ProtocolView>();
 
 
             cfg.CreateMap<MastData, MastTable>().ReverseMap();
-            cfg.CreateMap<MastTypeView, MastTypeTable>().ReverseMap();
+            cfg.CreateMap<MastTypeData, MastTypeTable>().ReverseMap();
             cfg.CreateMap<PlantView, PlantTable>().ReverseMap();
-            cfg.CreateMap<DistrictView, DistrictTable>().ReverseMap();
+            cfg.CreateMap<DistrictData, DistrictTable>().ReverseMap();
             cfg.CreateMap<ProtocolData, ProtocolTable>().ReverseMap();
 
         });
@@ -51,14 +51,14 @@ namespace CatenarySupport.Database
             mapping_types.AddTypeMapping(configuration, typeof(MastData), typeof(MastTable));
             mapping_types.AddTypeMapping(configuration, typeof(MastTable), typeof(MastData));
 
-            mapping_types.AddTypeMapping(configuration, typeof(MastTypeView), typeof(MastTypeTable));
-            mapping_types.AddTypeMapping(configuration, typeof(MastTypeTable), typeof(MastTypeView));
+            mapping_types.AddTypeMapping(configuration, typeof(MastTypeData), typeof(MastTypeTable));
+            mapping_types.AddTypeMapping(configuration, typeof(MastTypeTable), typeof(MastTypeData));
 
-            mapping_types.AddTypeMapping(configuration, typeof(PlantView), typeof(PlantTable));
-            mapping_types.AddTypeMapping(configuration, typeof(PlantTable), typeof(PlantView));
+            mapping_types.AddTypeMapping(configuration, typeof(PlantData), typeof(PlantTable));
+            mapping_types.AddTypeMapping(configuration, typeof(PlantTable), typeof(PlantData));
 
-            mapping_types.AddTypeMapping(configuration, typeof(DistrictView), typeof(DistrictTable));
-            mapping_types.AddTypeMapping(configuration, typeof(DistrictTable), typeof(DistrictView));
+            mapping_types.AddTypeMapping(configuration, typeof(DistrictData), typeof(DistrictTable));
+            mapping_types.AddTypeMapping(configuration, typeof(DistrictTable), typeof(DistrictData));
 
             mapping_types.AddTypeMapping(configuration, typeof(ProtocolData), typeof(ProtocolTable));
             mapping_types.AddTypeMapping(configuration, typeof(ProtocolTable), typeof(ProtocolData));

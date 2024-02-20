@@ -3,7 +3,6 @@ using AutoMapper.Extensions.ExpressionMapping;
 using CatenarySupport.Database;
 using CatenarySupport.Providers.Views;
 using CatenarySupport.Providers.DTO;
-
 using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers

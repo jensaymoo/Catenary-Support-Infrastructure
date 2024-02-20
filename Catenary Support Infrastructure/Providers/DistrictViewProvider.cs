@@ -1,4 +1,7 @@
-﻿using CatenarySupport.Database;
+﻿using AutoMapper;
+using AutoMapper.Extensions.ExpressionMapping;
+using CatenarySupport.Database;
+using CatenarySupport.Providers.DTO;
 using CatenarySupport.Providers.Views;
 using System.Linq.Expressions;
 
@@ -6,40 +9,61 @@ namespace CatenarySupport.Providers
 {
     internal class DistrictViewProvider : IViewProvider<DistrictView>
     {
-        private readonly IDatabase database;
+        private static readonly IMapper mapper;
+        private readonly IDatabase datacontext;
+
+        static DistrictViewProvider()
+        {
+            mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddExpressionMapping();
+
+                cfg.CreateMap<DistrictView, DistrictData>()
+                    .ReverseMap();
+            }).CreateMapper();
+        }
+
         public DistrictViewProvider(IDatabase db)
         {
-            database = db;
+            datacontext = db;
         }
 
-        public void Insert(DistrictView model)
+        public void Insert(DistrictView view)
         {
-            database.Insert(model);
+            view.UUID = Guid.NewGuid().ToString();
+            datacontext.Insert(mapper.Map<DistrictData>(view));
+            //database.Insert(view);
         }
 
-        public void Delete(DistrictView model)
+        public void Delete(DistrictView view)
         {
-            database.Delete(model);
+            datacontext.Delete(mapper.Map<DistrictData>(view));
+            //datacontext.Delete(view);
         }
         public void Delete(Expression<Func<DistrictView, bool>> predicate)
         {
-            database.Delete(predicate);
+            datacontext.Delete(mapper.Map<Expression<Func<DistrictData, bool>>>(predicate));
+            //datacontext.Delete(predicate);
         }
 
         public IEnumerable<DistrictView> Select()
         {
-            
-            return database.Select<DistrictView>();
+            return datacontext.Select<DistrictData>()
+                .Select(s => mapper.Map<DistrictView>(s));
+            //return datacontext.Select<DistrictView>();
         }
 
         public IEnumerable<DistrictView> Select(Expression<Func<DistrictView, bool>> predicate)
         {
-            return database.Select(predicate);
+            return datacontext.Select<DistrictData>(mapper.Map<Expression<Func<DistrictData, bool>>>(predicate))
+                .Select(s => mapper.Map<DistrictView>(s));
+            //return datacontext.Select(predicate);
         }
 
-        public void Update(DistrictView model)
+        public void Update(DistrictView view)
         {
-            database.Update(model);
+            datacontext.Update(mapper.Map<DistrictData>(view));
+            //datacontext.Update(view);
         }
 
 
