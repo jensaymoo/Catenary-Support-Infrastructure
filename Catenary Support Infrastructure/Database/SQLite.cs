@@ -3,6 +3,7 @@ using AutoMapper.Extensions.ExpressionMapping;
 using AutoMapper.QueryableExtensions;
 using CatenarySupport.Database.Tables;
 using CatenarySupport.Providers.Views;
+using CatenarySupport.Providers.DTO;
 using LinqToDB;
 using LinqToDB.Extensions;
 using LinqToDB.SqlQuery;
@@ -21,8 +22,8 @@ namespace CatenarySupport.Database
         {
             cfg.AddExpressionMapping();
 
-            cfg.CreateProjection<MastView, MastTable>();
-            cfg.CreateProjection<MastTable, MastView>();
+            cfg.CreateProjection<MastData, MastTable>();
+            cfg.CreateProjection<MastTable, MastData>();
 
             cfg.CreateProjection<MastTypeView, MastTypeTable>();
             cfg.CreateProjection<MastTypeTable, MastTypeView>();
@@ -33,22 +34,22 @@ namespace CatenarySupport.Database
             cfg.CreateProjection<DistrictView, DistrictTable>();
             cfg.CreateProjection<DistrictTable, DistrictView>();
 
-            cfg.CreateProjection<ProtocolView, ProtocolTable>();
-            cfg.CreateProjection<ProtocolTable, ProtocolView>();
+            cfg.CreateProjection<ProtocolView, ProtocolData>();
+            cfg.CreateProjection<ProtocolData, ProtocolView>();
 
 
-            cfg.CreateMap<MastView, MastTable>().ReverseMap();
+            cfg.CreateMap<MastData, MastTable>().ReverseMap();
             cfg.CreateMap<MastTypeView, MastTypeTable>().ReverseMap();
             cfg.CreateMap<PlantView, PlantTable>().ReverseMap();
             cfg.CreateMap<DistrictView, DistrictTable>().ReverseMap();
-            cfg.CreateMap<ProtocolView, ProtocolTable>().ReverseMap();
+            cfg.CreateMap<ProtocolData, ProtocolTable>().ReverseMap();
 
         });
 
         static SQLite()
         {
-            mapping_types.AddTypeMapping(configuration, typeof(MastView), typeof(MastTable));
-            mapping_types.AddTypeMapping(configuration, typeof(MastTable), typeof(MastView));
+            mapping_types.AddTypeMapping(configuration, typeof(MastData), typeof(MastTable));
+            mapping_types.AddTypeMapping(configuration, typeof(MastTable), typeof(MastData));
 
             mapping_types.AddTypeMapping(configuration, typeof(MastTypeView), typeof(MastTypeTable));
             mapping_types.AddTypeMapping(configuration, typeof(MastTypeTable), typeof(MastTypeView));
@@ -59,8 +60,8 @@ namespace CatenarySupport.Database
             mapping_types.AddTypeMapping(configuration, typeof(DistrictView), typeof(DistrictTable));
             mapping_types.AddTypeMapping(configuration, typeof(DistrictTable), typeof(DistrictView));
 
-            mapping_types.AddTypeMapping(configuration, typeof(ProtocolView), typeof(ProtocolTable));
-            mapping_types.AddTypeMapping(configuration, typeof(ProtocolTable), typeof(ProtocolView));
+            mapping_types.AddTypeMapping(configuration, typeof(ProtocolData), typeof(ProtocolTable));
+            mapping_types.AddTypeMapping(configuration, typeof(ProtocolTable), typeof(ProtocolData));
 
             mapper = configuration.CreateMapper();
         }

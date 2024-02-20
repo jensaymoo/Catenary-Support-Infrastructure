@@ -2,7 +2,7 @@
 
 namespace CatenarySupport.Providers.DTO
 {
-    public class MastDataTransferObject : IDataTransferObject
+    public class MastData : IDataObject
     {
         public string UUID { get; set; }
 
