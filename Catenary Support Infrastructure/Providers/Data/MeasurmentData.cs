@@ -1,14 +1,12 @@
-﻿using LinqToDB.Mapping;
-
-namespace CatenarySupport.Providers.Data
+﻿namespace CatenarySupport.Providers.Data
 {
     public class MeasurmentData
     {
-        public required string UUID { get; set; }
+        public string? UUID { get; set; }
 
-        public required string MastUUID { get; set; }
+        public string? MastUUID { get; set; }
 
-        public required string ProtocolUUID { get; set; }
+        public string? ProtocolUUID { get; set; }
 
         public float? MeasurmentR { get; set; }
 
@@ -29,11 +27,5 @@ namespace CatenarySupport.Providers.Data
         public float? TiltAlong{ get; set; }
 
         public float? TiltAcross { get; set; }
-
-        public string? MastDefect { get; set; }
-
-        public string? FoundationDefect { get; set; }
-
-        public string? AnchorDefect { get; set; }
     }
 }

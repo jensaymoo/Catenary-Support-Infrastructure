@@ -26,15 +26,18 @@ namespace CatenarySupport
         private readonly IViewProvider<PlantView> PlantViewProvider;
         private readonly IViewProvider<DistrictView> DistrictViewProvider;
         private readonly IViewProvider<ProtocolView> ProtocolViewProvider;
+        private readonly IViewProvider<DefectView> DefectViewProvider;
+
 
         public Main(IViewProvider<MastView> mast_provider, IViewProvider<MastTypeView> mast_type_provider, IViewProvider<PlantView> plant_provider,
-            IViewProvider<DistrictView> district_provider, IViewProvider<ProtocolView> protocol_provider)
+            IViewProvider<DistrictView> district_provider, IViewProvider<ProtocolView> protocol_provider, IViewProvider<DefectView> defect_provider)
         {
             MastViewProvider = mast_provider;
             MastTypeViewProvider = mast_type_provider;
             PlantViewProvider = plant_provider;
             DistrictViewProvider = district_provider;
             ProtocolViewProvider = protocol_provider;
+            DefectViewProvider = defect_provider;
 
             InitializeComponent();
         }
@@ -60,7 +63,6 @@ namespace CatenarySupport
             bindingSource_masts.AddCollection(MastViewProvider.Select());
 
             gridview_masts.OptionsDetail.DetailMode = DetailMode.Embedded;
-
             gridview_masts.MasterRowGetLevelDefaultView += (s, e) => {
                 
                 if (e.RelationIndex == 0)
@@ -68,7 +70,7 @@ namespace CatenarySupport
                     //делаем view для детализации протоклов
                     var view = (gridcontrol_masts.CreateView("GridView") as GridView)!;
                     view.OptionsBehavior.Editable = false;
-
+                    view.OptionsView.ShowGroupPanel = false;
                     e.DefaultView = view;
 
                 }
@@ -79,6 +81,8 @@ namespace CatenarySupport
                     view.OptionsView.GroupFooterShowMode = GroupFooterShowMode.Hidden;
 
                     view.OptionsBehavior.Editable = false;
+                    view.OptionsView.ShowGroupPanel = false;
+
                     view.RowHeight = 150;
 
                     e.DefaultView = view;
@@ -136,15 +140,21 @@ namespace CatenarySupport
                         break;
                     case 1:
                         
-                        BindingList<DefectSmallView> defects = new BindingList<DefectSmallView>();
+                        BindingList<DefectView> defects = new BindingList<DefectView>();
                         defects.AllowEdit = false;
                         defects.AllowNew = false;
                         defects.AllowRemove = false;
 
                         e.ChildList = defects;
+
+                        var mast = (gridview_masts.GetRow(e.RowHandle) as MastView)!;
                         
-                        //ProtocolViewProvider.Select()
-                        //    .ForEach(protocols.Add);
+                        DefectViewProvider.Select(defect => defect.MastUUID == mast.UUID)
+                            .ForEach(defects.Add);                        
+
+                        if (e.ChildList.Count == 0) 
+                            XtraMessageBox.Show("Дефектов для опоры не найдено", "Информация", MessageBoxButtons.OK);
+
                         break;
                 }
 

@@ -46,14 +46,5 @@ namespace CatenarySupport.Database.Tables
 
         [Column("titl_across"), DataType("REAL")]
         public float? TiltAcross { get; set; }
-
-        [Column("mast_defect"), DataType("REAL")]
-        public string? MastDefect { get; set; }
-
-        [Column("foundation_defect"), DataType("REAL")]
-        public string? FoundationDefect { get; set; }
-
-        [Column("anchor_defect"), DataType("REAL")]
-        public string? AnchorDefect { get; set; }
     }
 }

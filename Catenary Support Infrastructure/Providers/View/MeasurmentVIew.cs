@@ -5,7 +5,7 @@ using CatenarySupport.Attributes;
 
 namespace CatenarySupport.Providers.View
 {
-    public class MeasurmentView
+    public class MeasurmentView : IViewObject
     {
         [Display(AutoGenerateField = false), ReadOnly(true)]
         public required string UUID { get; set; }
