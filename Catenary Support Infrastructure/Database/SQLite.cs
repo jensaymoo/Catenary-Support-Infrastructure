@@ -9,6 +9,9 @@ using LinqToDB.Extensions;
 using LinqToDB.SqlQuery;
 using System.Linq.Expressions;
 using TableOptions = LinqToDB.TableOptions;
+using System;
+using static LinqToDB.Reflection.Methods.LinqToDB.Insert;
+using System.Linq;
 
 namespace CatenarySupport.Database
 {
@@ -40,12 +43,16 @@ namespace CatenarySupport.Database
             cfg.CreateProjection<MeasurmentData, MeasurmentTable>();
             cfg.CreateProjection<MeasurmentTable, MeasurmentData>();
 
+            cfg.CreateProjection<DefectData, DefectTable>();
+            cfg.CreateProjection<DefectTable, DefectData>();
+
             cfg.CreateMap<MastData, MastTable>().ReverseMap();
             cfg.CreateMap<MastTypeData, MastTypeTable>().ReverseMap();
             cfg.CreateMap<PlantView, PlantTable>().ReverseMap();
             cfg.CreateMap<DistrictData, DistrictTable>().ReverseMap();
             cfg.CreateMap<ProtocolData, ProtocolTable>().ReverseMap();
             cfg.CreateMap<MeasurmentData, MeasurmentTable>().ReverseMap();
+            cfg.CreateMap<DefectData, DefectTable>().ReverseMap();
 
         });
 
@@ -53,21 +60,34 @@ namespace CatenarySupport.Database
         {
             mapping_types.AddTypeMapping(configuration, typeof(MastData), typeof(MastTable));
             mapping_types.AddTypeMapping(configuration, typeof(MastTable), typeof(MastData));
+            mapping_types.AddTypeMapping(configuration, typeof(Expression<Func<MastData, bool>>), typeof(Expression<Func<MastTable, bool>>));
 
             mapping_types.AddTypeMapping(configuration, typeof(MastTypeData), typeof(MastTypeTable));
             mapping_types.AddTypeMapping(configuration, typeof(MastTypeTable), typeof(MastTypeData));
+            mapping_types.AddTypeMapping(configuration, typeof(Expression<Func<MastTypeData, bool>>), typeof(Expression<Func<MastTypeTable, bool>>));
 
             mapping_types.AddTypeMapping(configuration, typeof(PlantData), typeof(PlantTable));
             mapping_types.AddTypeMapping(configuration, typeof(PlantTable), typeof(PlantData));
+            mapping_types.AddTypeMapping(configuration, typeof(Expression<Func<PlantData, bool>>), typeof(Expression<Func<PlantTable, bool>>));
 
             mapping_types.AddTypeMapping(configuration, typeof(DistrictData), typeof(DistrictTable));
             mapping_types.AddTypeMapping(configuration, typeof(DistrictTable), typeof(DistrictData));
+            mapping_types.AddTypeMapping(configuration, typeof(Expression<Func<DistrictData, bool>>), typeof(Expression<Func<DistrictTable, bool>>));
 
             mapping_types.AddTypeMapping(configuration, typeof(ProtocolData), typeof(ProtocolTable));
             mapping_types.AddTypeMapping(configuration, typeof(ProtocolTable), typeof(ProtocolData));
+            mapping_types.AddTypeMapping(configuration, typeof(Expression<Func<ProtocolData, bool>>), typeof(Expression<Func<ProtocolTable, bool>>));
 
             mapping_types.AddTypeMapping(configuration, typeof(MeasurmentTable), typeof(MeasurmentData));
             mapping_types.AddTypeMapping(configuration, typeof(MeasurmentData), typeof(MeasurmentTable));
+            mapping_types.AddTypeMapping(configuration, typeof(Expression<Func<MeasurmentData, bool>>), typeof(Expression<Func<MeasurmentTable, bool>>));
+
+            mapping_types.AddTypeMapping(configuration, typeof(DefectTable), typeof(DefectData));
+            mapping_types.AddTypeMapping(configuration, typeof(DefectData), typeof(DefectTable));
+            mapping_types.AddTypeMapping(configuration, typeof(Expression<Func<DefectTable, bool>>), typeof(Expression<Func<DefectData, bool>>));
+
+
+
 
 
             mapper = configuration.CreateMapper();
@@ -149,14 +169,18 @@ namespace CatenarySupport.Database
             methtod_ref = methtod_info!.MakeGenericMethod(projected_type);
             returned_data = methtod_ref.Invoke(this, new[] { context });
             
-            return (returned_data as IQueryable).ProjectTo<T>(configuration);
+            return (returned_data as IQueryable).ProjectTo<T>(configuration).ToArray<T>();
         }
 
         public IEnumerable<T> Select<T>(Expression<Func<T, bool>> expression) where T : class, new()
         {
-            throw new NotImplementedException();
+            var projected_type = MapperExtensions.ReplaceType(mapping_types, expression.GetType());
+            var transaled_expr = mapper.MapExpression(expression, expression.GetType(), projected_type);
+            var compiled_expr = transaled_expr.Compile();
 
-            //return context.GetTable<T>().Where(expression);
+            return Select<T>().Where(t => 
+                (bool)compiled_expr.DynamicInvoke(mapper.Map(t, t.GetType(), MapperExtensions.ReplaceType(mapping_types, t.GetType())))!
+            ).ToArray<T>();
         }
 
         public void Update<T>(T obj) where T : class, new()
