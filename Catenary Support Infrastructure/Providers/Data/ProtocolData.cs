@@ -1,4 +1,4 @@
-﻿namespace CatenarySupport.Providers.DTO
+﻿namespace CatenarySupport.Providers.Data
 {
     public class ProtocolData : IDataObject
     {

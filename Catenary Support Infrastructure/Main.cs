@@ -1,6 +1,8 @@
-﻿using CatenarySupport.Attributes;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using CatenarySupport.Attributes;
 using CatenarySupport.Providers;
-using CatenarySupport.Providers.Views;
+using CatenarySupport.Providers.View;
 using DevExpress.Internal;
 using DevExpress.Xpf.Grid;
 using DevExpress.XtraEditors;
@@ -14,7 +16,6 @@ using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
-using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace CatenarySupport
 {
@@ -51,33 +52,148 @@ namespace CatenarySupport
             gridview_masts.RowUpdated += Gridview_masts_RowUpdated;
             gridview_masts.RowDeleting += Gridview_masts_RowDeleting;
             gridview_masts.ValidateRow += Gridview_masts_ValidateRow;
+
             SetColumnParams(typeof(MastView), gridcontrol_masts.RepositoryItems);
 
             BindingSource bindingSource_masts = new BindingSource();
             bindingSource_masts.DataSource = typeof(MastView);
             bindingSource_masts.AddCollection(MastViewProvider.Select());
 
+            gridview_masts.OptionsDetail.DetailMode = DetailMode.Embedded;
+
+            gridview_masts.MasterRowGetLevelDefaultView += (s, e) => {
+                
+                if (e.RelationIndex == 0)
+                {
+                    //делаем view для детализации протоклов
+                    var view = (gridcontrol_masts.CreateView("GridView") as GridView)!;
+                    view.OptionsBehavior.Editable = false;
+
+                    e.DefaultView = view;
+
+                }
+                if (e.RelationIndex == 1)
+                {
+                    //делаем view для детализации замечаний
+                    var view = (gridcontrol_masts.CreateView("GridView") as GridView)!;
+                    view.OptionsView.GroupFooterShowMode = GroupFooterShowMode.Hidden;
+
+                    view.OptionsBehavior.Editable = false;
+                    view.RowHeight = 150;
+
+                    e.DefaultView = view;
+                }
+            };
+
+
+            gridview_masts.MasterRowEmpty += (s, e) => {
+                //здесь нужно чекнуть есть измерения для опоры
+                //если нету то соответсвенно нужно установить e.IsEmpty = true;
+                e.IsEmpty = false;
+            };
+
+            gridview_masts.MasterRowGetRelationCount += (s, e) => {
+                e.RelationCount = 2;
+            };
+
+            gridview_masts.MasterRowGetRelationName += (s, e) => {
+                switch(e.RelationIndex)
+                {
+                    case 0:
+                        e.RelationName = "Протоколы";
+                        break;
+                    case 1:
+                        e.RelationName = "Дефекты";
+                        break;
+                }
+            };
+
+            gridview_masts.MasterRowGetChildList += async (s, e) => {
+
+                switch (e.RelationIndex)
+                {
+                    //здесь можно получить коллекцию с MeasurmentData c фильром по опоре и
+                    //из нее уже слепить таблицу с протоколами и таблицу дефектами
+
+                    case 0:
+                        BindingList<ProtocolSmallView> protocols = new BindingList<ProtocolSmallView>();
+                        protocols.AllowEdit = false;
+                        protocols.AllowNew = false;
+                        protocols.AllowRemove = false;
+
+                        e.ChildList = protocols;
+
+                        MapperConfiguration mapper_config = new MapperConfiguration(cfg =>
+                        {
+                            cfg.CreateProjection<ProtocolView, ProtocolSmallView>();
+                        });
+
+                        ProtocolViewProvider.Select()
+                            .AsQueryable()
+                            .ProjectTo<ProtocolSmallView>(mapper_config)
+                            .ForEach(protocols.Add);
+
+                        break;
+                    case 1:
+                        
+                        BindingList<DefectSmallView> defects = new BindingList<DefectSmallView>();
+                        defects.AllowEdit = false;
+                        defects.AllowNew = false;
+                        defects.AllowRemove = false;
+
+                        e.ChildList = defects;
+                        
+                        //ProtocolViewProvider.Select()
+                        //    .ForEach(protocols.Add);
+                        break;
+                }
+
+            };
+
+
             gridcontrol_masts.MainView = gridview_masts;
             gridcontrol_masts.DataSource = bindingSource_masts;
 
+            //gridview_protocols.OptionsBehavior.EditingMode = GridEditingMode.EditFormInplace;
+            //gridview_protocols.CustomRowCellEditForEditing += (sender, e) =>
+            //{
+            //    var item = gridcontrol_masts.RepositoryItems[e.Column.FieldName];
+            //    if (item != null)
+            //        e.RepositoryItem = item;
+            //};
+            //gridview_protocols.RowUpdated += Gridview_protocols_RowUpdated;
+            //gridview_protocols.RowDeleting += Gridview_protocols_RowDeleting;
+            //gridview_protocols.ValidateRow += Gridview_protocols_ValidateRow;
+            //SetColumnParams(typeof(ProtocolView), gridcontrol_masts.RepositoryItems);
 
-            gridview_protocols.OptionsBehavior.EditingMode = GridEditingMode.EditFormInplace;
-            gridview_protocols.CustomRowCellEditForEditing += (sender, e) =>
-            {
-                var item = gridcontrol_masts.RepositoryItems[e.Column.FieldName];
-                if (item != null)
-                    e.RepositoryItem = item;
-            };
-            gridview_protocols.RowUpdated += Gridview_protocols_RowUpdated;
-            gridview_protocols.RowDeleting += Gridview_protocols_RowDeleting;
-            gridview_protocols.ValidateRow += Gridview_protocols_ValidateRow;
-            SetColumnParams(typeof(ProtocolView), gridcontrol_masts.RepositoryItems);
+            //BindingSource bindingSource_protocols = new BindingSource();
+            //bindingSource_protocols.DataSource = typeof(ProtocolView);
+            //bindingSource_protocols.AddCollection(ProtocolViewProvider.Select());
+            //gridcontrol_protocols.MainView = gridview_protocols;
+            //gridcontrol_protocols.DataSource = bindingSource_protocols;
 
-            BindingSource bindingSource_protocols = new BindingSource();
-            bindingSource_protocols.DataSource = typeof(ProtocolView);
-            bindingSource_protocols.AddCollection(ProtocolViewProvider.Select());
-            gridcontrol_protocols.MainView = gridview_protocols;
-            gridcontrol_protocols.DataSource = bindingSource_protocols;
+
+            //gridview_measurments.OptionsBehavior.EditingMode = GridEditingMode.EditFormInplace;
+            //gridview_measurments.CustomRowCellEditForEditing += (sender, e) =>
+            //{
+            //    var item = gridcontrol_masts.RepositoryItems[e.Column.FieldName];
+            //    if (item != null)
+            //        e.RepositoryItem = item;
+            //};
+            //gridview_measurments.OptionsDetail.DetailMode = DetailMode.Embedded;
+            //gridview_measurments.OptionsDetail.AllowExpandEmptyDetails = true;
+            ////gridview_protocols.RowUpdated += Gridview_protocols_RowUpdated;
+            ////gridview_protocols.RowDeleting += Gridview_protocols_RowDeleting;
+            ////gridview_protocols.ValidateRow += Gridview_protocols_ValidateRow;
+            //SetColumnParams(typeof(MeasurmentView), gridcontrol_masts.RepositoryItems);
+
+            //BindingSource bindingSource_measurments= new BindingSource();
+            //bindingSource_measurments.DataSource = typeof(MeasurmentView);
+            ////bindingSource_measurments.AddCollection(ProtocolViewProvider.Select());
+
+            //gridcontrol_measurments.MainView = gridview_measurments;
+            //gridcontrol_measurments.DataSource = bindingSource_measurments;
+
 
         }
 

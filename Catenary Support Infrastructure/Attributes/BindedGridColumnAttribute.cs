@@ -22,19 +22,24 @@ namespace CatenarySupport.Attributes
                 var acessor = new MemberAcessor<object>();
                 if (acessor.TryCallMethodWithoutParams(provider, "Select", out var values))
                 {
-                    var binded_values = new BindingList<object>();
-                    (values as IEnumerable<object>)?
-                        .ForEach(m => binded_values.Add(m));
+                    var binded_val = new BindingSource();
+                    binded_val.AddCollection(values as IEnumerable<object>);
 
-                    if (binded_values.Count > 0)
+                    if (binded_val.Count > 0)
                     {
                         var repo_item = new RepositoryItemGridLookUpEdit()
                         {
                             Name = BindedMember,
                             DisplayMember = BindedMember,
                             ValueMember = BindedMember,
-                            DataSource = binded_values
+                            DataSource = binded_val,
+                            ShowPopupShadow = true,
+                            BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFitResizePopup,
+                            AcceptEditorTextAsNewValue = DevExpress.Utils.DefaultBoolean.True,
+                            //PopupFormMinSize = new Size(1280, 480),
                         };
+                        repo_item.View.OptionsView.ShowPreviewRowLines = DevExpress.Utils.DefaultBoolean.True; 
+                        repo_item.View.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Top;
                         return repo_item;
                     }
                 }

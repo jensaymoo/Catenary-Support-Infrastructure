@@ -2,8 +2,8 @@
 using AutoMapper.Extensions.ExpressionMapping;
 using AutoMapper.QueryableExtensions;
 using CatenarySupport.Database.Tables;
-using CatenarySupport.Providers.Views;
-using CatenarySupport.Providers.DTO;
+using CatenarySupport.Providers.View;
+using CatenarySupport.Providers.Data;
 using LinqToDB;
 using LinqToDB.Extensions;
 using LinqToDB.SqlQuery;
@@ -34,15 +34,18 @@ namespace CatenarySupport.Database
             cfg.CreateProjection<DistrictData, DistrictTable>();
             cfg.CreateProjection<DistrictTable, DistrictData>();
 
-            cfg.CreateProjection<ProtocolView, ProtocolData>();
-            cfg.CreateProjection<ProtocolData, ProtocolView>();
+            cfg.CreateProjection<ProtocolData, ProtocolTable>();
+            cfg.CreateProjection<ProtocolTable, ProtocolData>();
 
+            cfg.CreateProjection<MeasurmentData, MeasurmentTable>();
+            cfg.CreateProjection<MeasurmentTable, MeasurmentData>();
 
             cfg.CreateMap<MastData, MastTable>().ReverseMap();
             cfg.CreateMap<MastTypeData, MastTypeTable>().ReverseMap();
             cfg.CreateMap<PlantView, PlantTable>().ReverseMap();
             cfg.CreateMap<DistrictData, DistrictTable>().ReverseMap();
             cfg.CreateMap<ProtocolData, ProtocolTable>().ReverseMap();
+            cfg.CreateMap<MeasurmentData, MeasurmentTable>().ReverseMap();
 
         });
 
@@ -62,6 +65,10 @@ namespace CatenarySupport.Database
 
             mapping_types.AddTypeMapping(configuration, typeof(ProtocolData), typeof(ProtocolTable));
             mapping_types.AddTypeMapping(configuration, typeof(ProtocolTable), typeof(ProtocolData));
+
+            mapping_types.AddTypeMapping(configuration, typeof(MeasurmentTable), typeof(MeasurmentData));
+            mapping_types.AddTypeMapping(configuration, typeof(MeasurmentData), typeof(MeasurmentTable));
+
 
             mapper = configuration.CreateMapper();
         }

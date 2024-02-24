@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 
-namespace CatenarySupport.Providers.Views
+namespace CatenarySupport.Providers.View
 {
     public class MastView : IViewObject
     {

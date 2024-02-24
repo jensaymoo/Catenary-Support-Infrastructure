@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.Extensions.ExpressionMapping;
 using CatenarySupport.Database;
-using CatenarySupport.Providers.DTO;
-using CatenarySupport.Providers.Views;
+using CatenarySupport.Providers.Data;
+using CatenarySupport.Providers.View;
 using System.Linq.Expressions;
 
 namespace CatenarySupport.Providers

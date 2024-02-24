@@ -1,4 +1,4 @@
-﻿namespace CatenarySupport.Providers.Views
+﻿namespace CatenarySupport.Providers.View
 {
     public interface IViewObject
     {
