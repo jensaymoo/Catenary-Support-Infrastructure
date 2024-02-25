@@ -84,7 +84,7 @@ namespace CatenarySupport
                 }
                 if (e.RelationIndex == 1)
                 {
-                    //делаем view для детализации замечаний
+                    //делаем view для детализации дефектов
                     var view = (gridcontrol_masts.CreateView("GridView") as GridView)!;
                     view.RowCellDefaultAlignment += (s, e) => {
                         e.HorzAlignment =  HorzAlignment.Center;
