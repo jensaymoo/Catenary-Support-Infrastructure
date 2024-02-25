@@ -1,7 +1,4 @@
-﻿using CatenarySupport.Attributes;
-using CatenarySupport.Database.Tables;
-using LinqToDB.Mapping;
-using System.ComponentModel;
+﻿using LinqToDB.Mapping;
 
 namespace CatenarySupport.Database.Tables
 {
@@ -11,11 +8,11 @@ namespace CatenarySupport.Database.Tables
         [Column("protocol_uuid"), PrimaryKey, NotNull, DataType("TEXT")]
         public string? UUID { get; set; }
 
-        [Column("plant"), NotNull, DataType("TEXT")]
-        public string? Plant { get; set; }
+        [Column("plant_uuid"), NotNull, DataType("TEXT")]
+        public string? PlantUUID { get; set; }
 
-        [Column("district"), NotNull, DataType("TEXT")]
-        public string? District { get; set; }
+        [Column("district_uuid"), NotNull, DataType("TEXT")]
+        public string? DistrictUUID { get; set; }
 
         [Column("protocol_id"), NotNull, DataType("INTEGER")]
         public int ProtocolID { get; set; }

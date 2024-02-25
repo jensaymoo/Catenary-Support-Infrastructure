@@ -4,9 +4,9 @@
     {
         public string? UUID { get; set; }
 
-        public string? Plant { get; set; }
+        public string? PlantUUID { get; set; }
 
-        public string? District { get; set; }
+        public string? DistrictUUID { get; set; }
 
         public int? ProtocolID { get; set; }
 

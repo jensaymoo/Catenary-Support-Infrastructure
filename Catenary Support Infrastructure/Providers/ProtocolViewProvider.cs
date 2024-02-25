@@ -45,14 +45,44 @@ namespace CatenarySupport.Providers
 
         public IEnumerable<ProtocolView> Select()
         {
-            return datacontext.Select<ProtocolData>()
-                .Select(s => mapper.Map<ProtocolView>(s));
+            var protocols = datacontext.Select<ProtocolData>();
+            var plants = protocols.SelectMany(protocol => datacontext.Select<PlantData>(plant => plant.UUID == protocol.PlantUUID));
+            var districts = protocols.SelectMany(protocol => datacontext.Select<DistrictData>(district => district.UUID == protocol.DistrictUUID));
+
+            return protocols.Select(protocol => new ProtocolView()
+            {
+                UUID = protocol.UUID,
+                Plant = plants.SingleOrDefault(plant => plant.UUID == protocol.PlantUUID)!.Plant,
+                District = districts.SingleOrDefault(plant => plant.UUID == protocol.DistrictUUID)!.District,
+                ProtocolID = protocol.ProtocolID,
+                ProtocolDate = protocol.ProtocolDate,
+                Foreman = protocol.Foreman,
+                Notes = protocol.Notes
+            });
+
+            //return datacontext.Select<ProtocolData>()
+            //    .Select(s => mapper.Map<ProtocolView>(s));
         }
 
         public IEnumerable<ProtocolView> Select(Expression<Func<ProtocolView, bool>> predicate)
         {
-            return datacontext.Select<ProtocolData>(mapper.Map<Expression<Func<ProtocolData, bool>>>(predicate))
-                .Select(s => mapper.Map<ProtocolView>(s));
+            var protocols = datacontext.Select<ProtocolData>(mapper.Map<Expression<Func<ProtocolData, bool>>>(predicate));
+            var plants = protocols.SelectMany(protocol => datacontext.Select<PlantData>(plant => plant.UUID == protocol.PlantUUID));
+            var districts = protocols.SelectMany(protocol => datacontext.Select<DistrictData>(district => district.UUID == protocol.DistrictUUID));
+
+            return protocols.Select(protocol => new ProtocolView()
+            {
+                UUID = protocol.UUID,
+                Plant = plants.SingleOrDefault(plant => plant.UUID == protocol.PlantUUID)!.Plant,
+                District = districts.SingleOrDefault(plant => plant.UUID == protocol.DistrictUUID)!.District,
+                ProtocolID = protocol.ProtocolID,
+                ProtocolDate = protocol.ProtocolDate,
+                Foreman = protocol.Foreman,
+                Notes = protocol.Notes
+            });
+
+            //return protocols
+            //   .Select(s => mapper.Map<ProtocolView>(s));
         }
 
         public void Update(ProtocolView view)
