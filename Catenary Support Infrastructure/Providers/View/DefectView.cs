@@ -16,6 +16,9 @@ namespace CatenarySupport.Providers.View
         [Display(AutoGenerateField = false), ReadOnly(true)]
         public required string ProtocolUUID { get; set; }
 
+        [Display(AutoGenerateField = false), ReadOnly(true)]
+        public required string MeasurmentUUID { get; set; }
+
         [Display(AutoGenerateField = true, Name = "Протокол"), NotNull]
         public int? ProtocolID { get; set; }
 

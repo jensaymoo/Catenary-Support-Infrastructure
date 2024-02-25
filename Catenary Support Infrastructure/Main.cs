@@ -4,10 +4,13 @@ using CatenarySupport.Attributes;
 using CatenarySupport.Providers;
 using CatenarySupport.Providers.View;
 using DevExpress.Internal;
+using DevExpress.Utils;
 using DevExpress.Xpf.Grid;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraExport.Helpers;
 using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraMap;
 using FluentValidation;
 using LinqToDB.Extensions;
 using System.ComponentModel;
@@ -27,10 +30,12 @@ namespace CatenarySupport
         private readonly IViewProvider<DistrictView> DistrictViewProvider;
         private readonly IViewProvider<ProtocolView> ProtocolViewProvider;
         private readonly IViewProvider<DefectView> DefectViewProvider;
+        private readonly IViewProvider<MeasurmentView> MeasurmentViewProvider;
 
 
         public Main(IViewProvider<MastView> mast_provider, IViewProvider<MastTypeView> mast_type_provider, IViewProvider<PlantView> plant_provider,
-            IViewProvider<DistrictView> district_provider, IViewProvider<ProtocolView> protocol_provider, IViewProvider<DefectView> defect_provider)
+            IViewProvider<DistrictView> district_provider, IViewProvider<ProtocolView> protocol_provider, IViewProvider<DefectView> defect_provider,
+            IViewProvider<MeasurmentView> measurment_provider)
         {
             MastViewProvider = mast_provider;
             MastTypeViewProvider = mast_type_provider;
@@ -38,6 +43,8 @@ namespace CatenarySupport
             DistrictViewProvider = district_provider;
             ProtocolViewProvider = protocol_provider;
             DefectViewProvider = defect_provider;
+            MeasurmentViewProvider = measurment_provider;
+
 
             InitializeComponent();
         }
@@ -69,6 +76,7 @@ namespace CatenarySupport
                 {
                     //делаем view для детализации протоклов
                     var view = (gridcontrol_masts.CreateView("GridView") as GridView)!;
+                    view.OptionsSelection.EnableAppearanceFocusedCell = false;
                     view.OptionsBehavior.Editable = false;
                     view.OptionsView.ShowGroupPanel = false;
                     e.DefaultView = view;
@@ -78,8 +86,12 @@ namespace CatenarySupport
                 {
                     //делаем view для детализации замечаний
                     var view = (gridcontrol_masts.CreateView("GridView") as GridView)!;
-                    view.OptionsView.GroupFooterShowMode = GroupFooterShowMode.Hidden;
+                    view.RowCellDefaultAlignment += (s, e) => {
+                        e.HorzAlignment =  HorzAlignment.Center;
+                    };
 
+                    view.OptionsView.GroupFooterShowMode = GroupFooterShowMode.Hidden;
+                    view.OptionsSelection.EnableAppearanceFocusedCell = false;
                     view.OptionsBehavior.Editable = false;
                     view.OptionsView.ShowGroupPanel = false;
 
@@ -93,7 +105,16 @@ namespace CatenarySupport
             gridview_masts.MasterRowEmpty += (s, e) => {
                 //здесь нужно чекнуть есть измерения для опоры
                 //если нету то соответсвенно нужно установить e.IsEmpty = true;
-                e.IsEmpty = false;
+                var selected_mast = (gridview_masts.GetRow(e.RowHandle) as MastView)!;
+
+#if DEBUG
+                Debug.WriteLine("CHECK DETILED VIEW FOR MAST: " + selected_mast.UUID);
+#endif
+
+                if (MeasurmentViewProvider.Select(m => m.MastUUID == selected_mast.UUID).Any())
+                    e.IsEmpty = false;
+                else
+                    e.IsEmpty = true;
             };
 
             gridview_masts.MasterRowGetRelationCount += (s, e) => {
@@ -114,16 +135,25 @@ namespace CatenarySupport
 
             gridview_masts.MasterRowGetChildList += async (s, e) => {
 
+                var selected_mast = (gridview_masts.GetRow(e.RowHandle) as MastView)!;
+                var mesurments = MeasurmentViewProvider.Select(m => m.MastUUID == selected_mast.UUID);
+
                 switch (e.RelationIndex)
                 {
                     //здесь можно получить коллекцию с MeasurmentData c фильром по опоре и
                     //из нее уже слепить таблицу с протоколами и таблицу дефектами
 
                     case 0:
-                        BindingList<ProtocolSmallView> protocols = new BindingList<ProtocolSmallView>();
-                        protocols.AllowEdit = false;
-                        protocols.AllowNew = false;
-                        protocols.AllowRemove = false;
+#if DEBUG
+                        Debug.WriteLine("GET DETILED VIEW PROTOCOLS FOR MAST: " + selected_mast.UUID);
+#endif
+
+                        BindingList<ProtocolSmallView> protocols = new BindingList<ProtocolSmallView>
+                        {
+                            AllowEdit = false,
+                            AllowNew = false,
+                            AllowRemove = false
+                        };
 
                         e.ChildList = protocols;
 
@@ -132,25 +162,28 @@ namespace CatenarySupport
                             cfg.CreateProjection<ProtocolView, ProtocolSmallView>();
                         });
 
-                        ProtocolViewProvider.Select()
+                        mesurments.SelectMany(measurment => ProtocolViewProvider.Select(protocol => protocol.UUID == measurment.ProtocolUUID))
                             .AsQueryable()
                             .ProjectTo<ProtocolSmallView>(mapper_config)
                             .ForEach(protocols.Add);
 
                         break;
                     case 1:
-                        
-                        BindingList<DefectView> defects = new BindingList<DefectView>();
-                        defects.AllowEdit = false;
-                        defects.AllowNew = false;
-                        defects.AllowRemove = false;
+#if DEBUG
+                        Debug.WriteLine("GET DETILED VIEW DEFECTS FOR MAST: " + selected_mast.UUID);
+#endif
+
+                        BindingList<DefectView> defects = new BindingList<DefectView>
+                        {
+                            AllowEdit = false,
+                            AllowNew = false,
+                            AllowRemove = false
+                        };
 
                         e.ChildList = defects;
 
-                        var mast = (gridview_masts.GetRow(e.RowHandle) as MastView)!;
-                        
-                        DefectViewProvider.Select(defect => defect.MastUUID == mast.UUID)
-                            .ForEach(defects.Add);                        
+                        mesurments.SelectMany(measurment => DefectViewProvider.Select(defect => defect.MeasurmentUUID == measurment.UUID))
+                            .ForEach(defects.Add);
 
                         if (e.ChildList.Count == 0) 
                             XtraMessageBox.Show("Дефектов для опоры не найдено", "Информация", MessageBoxButtons.OK);

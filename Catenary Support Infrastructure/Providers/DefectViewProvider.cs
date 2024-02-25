@@ -20,7 +20,7 @@ namespace CatenarySupport.Providers
 
                 cfg.CreateMap<DefectView, DefectData>()
                     .ReverseMap();
-                cfg.CreateMap<ProtocolData, DefectData>();
+                //cfg.CreateMap<ProtocolData, DefectData>();
 
             }).CreateMapper();
         }
@@ -48,48 +48,49 @@ namespace CatenarySupport.Providers
         public IEnumerable<DefectView> Select()
         {
             var defects = datacontext.Select<DefectData>();
-            var protocols = defects.SelectMany(d => datacontext.Select<ProtocolData>(s => s.UUID == d.ProtocolUUID))
-                .DistinctBy(sd=> sd.UUID);
 
-            return defects
-                .Join(protocols, d => d.ProtocolUUID, p => p.UUID, (d, p) => new DefectView()
-                {
-                    UUID = d.UUID!,
-                    MastUUID = d.MastUUID!,
-                    ProtocolUUID = d.ProtocolUUID!,
-                    ProtocolID = p.ProtocolID,
-                    ProtocolDate = p.ProtocolDate,
-                    Defect = d.Defect,
-                    Description = d.Description,
-                    Photo = d.Photo
-                });
+            var measurments = defects.SelectMany(defect => datacontext.Select<MeasurmentData>(measurment => measurment.UUID == defect.MeasurmentUUID))
+                .DistinctBy(measurment => measurment.UUID);
 
-            //return datacontext.Select<DefectData>()
-            //    .Select(s => mapper.Map<DefectView>(s));
+            var protocols = measurments.SelectMany(measurment => datacontext.Select<ProtocolData>(protocol => protocol.UUID == measurment.ProtocolUUID))
+                .DistinctBy(protocol => protocol.UUID);
+
+            return defects.Select(defect => new DefectView()
+            {
+                UUID = defect.UUID!,
+                MeasurmentUUID = defect.MeasurmentUUID!,
+                MastUUID = measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.MastUUID!,
+                ProtocolUUID = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.ProtocolUUID)?.UUID!,
+                ProtocolID = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.ProtocolUUID)?.ProtocolID,
+                ProtocolDate = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.ProtocolUUID)?.ProtocolDate,
+                Defect = defect.Defect,
+                Description = defect.Description,
+                Photo = defect.Photo
+            });
         }
 
         public IEnumerable<DefectView> Select(Expression<Func<DefectView, bool>> predicate)
         {
             var defects = datacontext.Select<DefectData>(mapper.Map<Expression<Func<DefectData, bool>>>(predicate));
-            var protocols = defects.SelectMany(d => datacontext.Select<ProtocolData>(s => s.UUID == d.ProtocolUUID))
-                .DistinctBy(sd => sd.UUID);
 
-            return defects
-                .Join(protocols, d => d.ProtocolUUID, p => p.UUID, (d, p) => new DefectView()
-                {
-                    UUID = d.UUID!,
-                    MastUUID = d.MastUUID!,
-                    ProtocolUUID = d.ProtocolUUID!,
-                    ProtocolID = p.ProtocolID,
-                    ProtocolDate = p.ProtocolDate,
-                    Defect = d.Defect,
-                    Description = d.Description,
-                    Photo = d.Photo
-                });
+            var measurments = defects.SelectMany(defect => datacontext.Select<MeasurmentData>(measurment => measurment.UUID == defect.MeasurmentUUID))
+                .DistinctBy(measurment => measurment.UUID);
 
+            var protocols = measurments.SelectMany(measurment => datacontext.Select<ProtocolData>(protocol => protocol.UUID == measurment.ProtocolUUID))
+                .DistinctBy(protocol => protocol.UUID);
 
-            //return datacontext.Select<DefectData>(mapper.Map<Expression<Func<DefectData, bool>>>(predicate))
-            //    .Select(s => mapper.Map<DefectView>(s));
+            return defects.Select(defect => new DefectView()
+            {
+                UUID = defect.UUID!,
+                MeasurmentUUID = defect.MeasurmentUUID!,
+                MastUUID = measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.MastUUID!,
+                ProtocolUUID = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.ProtocolUUID)?.UUID!,
+                ProtocolID = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.ProtocolUUID)?.ProtocolID,
+                ProtocolDate = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.ProtocolUUID)?.ProtocolDate,
+                Defect = defect.Defect,
+                Description = defect.Description,
+                Photo = defect.Photo
+            }); 
         }
 
         public void Update(DefectView view)

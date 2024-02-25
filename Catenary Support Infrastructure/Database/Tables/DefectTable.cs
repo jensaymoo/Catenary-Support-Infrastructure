@@ -3,17 +3,14 @@ using System.ComponentModel;
 
 namespace CatenarySupport.Database.Tables
 {
-    [Table("дефекты")]
+    [Table("defects")]
     public class DefectTable
     {
         [Column("defect_uuid"), PrimaryKey, NotNull, DataType("TEXT")]
         public string? UUID { get; set; }
 
-        [Column("mast_uuid"), NotNull, DataType("TEXT")]
-        public string? MastUUID { get; set; }
-
-        [Column("protocal_uuid"), NotNull, DataType("TEXT")]
-        public string? ProtocolUUID { get; set; }
+        [Column("measurment_uuid"), NotNull, DataType("TEXT")]
+        public string? MeasurmentUUID { get; set; }
 
         [Column("defect"), DataType("TEXT")]
         public string? Defect { get; set; }

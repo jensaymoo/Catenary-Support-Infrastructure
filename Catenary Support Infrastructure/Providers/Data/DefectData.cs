@@ -4,9 +4,7 @@
     {
         public string UUID { get; set; }
 
-        public string? MastUUID { get; set; }
-
-        public string? ProtocolUUID { get; set; }
+        public string? MeasurmentUUID { get; set; }
 
         public string? Defect { get; set; }
         
