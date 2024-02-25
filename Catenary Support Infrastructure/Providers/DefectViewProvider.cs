@@ -55,18 +55,17 @@ namespace CatenarySupport.Providers
             var protocols = measurments.SelectMany(measurment => datacontext.Select<ProtocolData>(protocol => protocol.UUID == measurment.ProtocolUUID))
                 .DistinctBy(protocol => protocol.UUID);
 
-            return defects.Select(defect => new DefectView()
+            return defects.Select(s => new Func<DefectData, DefectView>((s) =>
             {
-                UUID = defect.UUID!,
-                MeasurmentUUID = defect.MeasurmentUUID!,
-                MastUUID = measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.MastUUID!,
-                ProtocolUUID = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.ProtocolUUID)?.UUID!,
-                ProtocolID = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.ProtocolUUID)?.ProtocolID,
-                ProtocolDate = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.ProtocolUUID)?.ProtocolDate,
-                Defect = defect.Defect,
-                Description = defect.Description,
-                Photo = defect.Photo
-            });
+                var view = mapper.Map<DefectView>(s);
+
+                view.MastUUID = measurments.SingleOrDefault(m => m.UUID == s.MeasurmentUUID)?.MastUUID!;
+                view.ProtocolUUID = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == s.MeasurmentUUID)?.ProtocolUUID)?.UUID!;
+                view.ProtocolID = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == s.MeasurmentUUID)?.ProtocolUUID)?.ProtocolID;
+                view.ProtocolDate = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == s.MeasurmentUUID)?.ProtocolUUID)?.ProtocolDate;
+
+                return view;
+            }).Invoke(s));
         }
 
         public IEnumerable<DefectView> Select(Expression<Func<DefectView, bool>> predicate)
@@ -79,18 +78,17 @@ namespace CatenarySupport.Providers
             var protocols = measurments.SelectMany(measurment => datacontext.Select<ProtocolData>(protocol => protocol.UUID == measurment.ProtocolUUID))
                 .DistinctBy(protocol => protocol.UUID);
 
-            return defects.Select(defect => new DefectView()
+            return defects.Select(s => new Func<DefectData, DefectView>((s) =>
             {
-                UUID = defect.UUID!,
-                MeasurmentUUID = defect.MeasurmentUUID!,
-                MastUUID = measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.MastUUID!,
-                ProtocolUUID = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.ProtocolUUID)?.UUID!,
-                ProtocolID = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.ProtocolUUID)?.ProtocolID,
-                ProtocolDate = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == defect.MeasurmentUUID)?.ProtocolUUID)?.ProtocolDate,
-                Defect = defect.Defect,
-                Description = defect.Description,
-                Photo = defect.Photo
-            }); 
+                var view = mapper.Map<DefectView>(s);
+
+                view.MastUUID = measurments.SingleOrDefault(m => m.UUID == s.MeasurmentUUID)?.MastUUID!;
+                view.ProtocolUUID = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == s.MeasurmentUUID)?.ProtocolUUID)?.UUID!;
+                view.ProtocolID = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == s.MeasurmentUUID)?.ProtocolUUID)?.ProtocolID;
+                view.ProtocolDate = protocols.SingleOrDefault(p => p.UUID == measurments.SingleOrDefault(m => m.UUID == s.MeasurmentUUID)?.ProtocolUUID)?.ProtocolDate;
+
+                return view;
+            }).Invoke(s));
         }
 
         public void Update(DefectView view)
