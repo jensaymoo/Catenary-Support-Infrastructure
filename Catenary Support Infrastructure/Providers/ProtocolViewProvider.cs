@@ -46,8 +46,11 @@ namespace CatenarySupport.Providers
         public IEnumerable<ProtocolView> Select()
         {
             var protocols = datacontext.Select<ProtocolData>();
-            var plants = protocols.SelectMany(protocol => datacontext.Select<PlantData>(plant => plant.UUID == protocol.PlantUUID));
-            var districts = protocols.SelectMany(protocol => datacontext.Select<DistrictData>(district => district.UUID == protocol.DistrictUUID));
+            var plants = protocols.SelectMany(protocol => datacontext.Select<PlantData>(plant => plant.UUID == protocol.PlantUUID))
+                .DistinctBy(plant => plant.UUID);
+
+            var districts = protocols.SelectMany(protocol => datacontext.Select<DistrictData>(district => district.UUID == protocol.DistrictUUID))
+                .DistinctBy(district => district.UUID);
 
             return protocols.Select(protocol => new ProtocolView()
             {
@@ -67,8 +70,11 @@ namespace CatenarySupport.Providers
         public IEnumerable<ProtocolView> Select(Expression<Func<ProtocolView, bool>> predicate)
         {
             var protocols = datacontext.Select<ProtocolData>(mapper.Map<Expression<Func<ProtocolData, bool>>>(predicate));
-            var plants = protocols.SelectMany(protocol => datacontext.Select<PlantData>(plant => plant.UUID == protocol.PlantUUID));
-            var districts = protocols.SelectMany(protocol => datacontext.Select<DistrictData>(district => district.UUID == protocol.DistrictUUID));
+            var plants = protocols.SelectMany(protocol => datacontext.Select<PlantData>(plant => plant.UUID == protocol.PlantUUID))
+                .DistinctBy(plant => plant.UUID);
+
+            var districts = protocols.SelectMany(protocol => datacontext.Select<DistrictData>(district => district.UUID == protocol.DistrictUUID))
+                .DistinctBy(district => district.UUID);
 
             return protocols.Select(protocol => new ProtocolView()
             {
