@@ -48,7 +48,7 @@ namespace CatenarySupport.Database
 
             cfg.CreateMap<MastData, MastTable>().ReverseMap();
             cfg.CreateMap<MastTypeData, MastTypeTable>().ReverseMap();
-            cfg.CreateMap<PlantView, PlantTable>().ReverseMap();
+            cfg.CreateMap<PlantData, PlantTable>().ReverseMap();
             cfg.CreateMap<DistrictData, DistrictTable>().ReverseMap();
             cfg.CreateMap<ProtocolData, ProtocolTable>().ReverseMap();
             cfg.CreateMap<MeasurmentData, MeasurmentTable>().ReverseMap();
