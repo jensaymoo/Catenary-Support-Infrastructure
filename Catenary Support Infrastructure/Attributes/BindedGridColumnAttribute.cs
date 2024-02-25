@@ -35,11 +35,7 @@ namespace CatenarySupport.Attributes
                             DataSource = binded_val,
                             ShowPopupShadow = true,
                             BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFitResizePopup,
-                            AcceptEditorTextAsNewValue = DevExpress.Utils.DefaultBoolean.True,
-                            //PopupFormMinSize = new Size(1280, 480),
                         };
-                        repo_item.View.OptionsView.ShowPreviewRowLines = DevExpress.Utils.DefaultBoolean.True; 
-                        repo_item.View.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Top;
                         return repo_item;
                     }
                 }
